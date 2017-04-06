@@ -16,7 +16,7 @@ class ExampleTest extends TestCase {
 
 	public function testOneCollection()
 	{
-		$response = $this->call('GET', 'collections/1');;
+		$response = $this->call('GET', 'collections/1');
 		$this->assertEquals(200, $response->getStatusCode());
 	}
 
