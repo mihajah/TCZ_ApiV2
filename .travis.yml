@@ -10,3 +10,4 @@ services:
 before_install:
   - php artisan cache:clear
   - php artisan config:cache
+  - php artisan migrate:install
