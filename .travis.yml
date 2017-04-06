@@ -10,3 +10,5 @@ services:
 before_install:
   - php artisan cache:clear
   - php artisan config:cache
+  - mysql -e 'CREATE DATABASE touchiz;'
+  - php artisan migrate:install
