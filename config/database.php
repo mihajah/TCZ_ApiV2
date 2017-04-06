@@ -54,7 +54,7 @@ return [
 
 		'mysql' => [
 			'driver'    => 'mysql',
-			'host'      => env('DB_HOST', 's19307571.domainepardefaut.fr'),
+			'host'      => env('DB_HOST', 'localhost'),
 			'database'  => env('DB_DATABASE', 'touchiz'),
 			'username'  => env('DB_USERNAME', 'mihaja'),
 			'password'  => env('DB_PASSWORD', 'gucevabrac2u'),
