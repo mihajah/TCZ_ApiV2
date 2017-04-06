@@ -7,3 +7,6 @@ script:
   - phpunit
 services:
   - mysql
+before_install:
+  - php artisan cache:clear
+  - php artisan config:cache
