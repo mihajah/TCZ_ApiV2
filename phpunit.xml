@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit backupGlobals="false"
          backupStaticAttributes="false"
-         bootstrap="bootstrap/autoload.php"
+         bootstrap="../../bootstrap/autoload.php"
          colors="true"
          convertErrorsToExceptions="true"
          convertNoticesToExceptions="true"
@@ -11,14 +11,18 @@
          syntaxCheck="false">
     <testsuites>
         <testsuite name="Application Test Suite">
-            <directory>./tests/</directory>
+            <directory>../../tests/</directory>
         </testsuite>
     </testsuites>
     <php>
-        <env name="APP_ENV" value="testing"/>
+        <env name="APP_ENV" value="local"/>
         <env name="CACHE_DRIVER" value="array"/>
         <env name="SESSION_DRIVER" value="array"/>
         <env name="QUEUE_DRIVER" value="sync"/>
-        <server name="SERVER_NAME" value="staging.touchiz.fr" />
+        <env name="DB_HOST" value="127.0.0.1"/>
+        <env name="DB_DATABASE" value="touchiz"/>
+        <env name="DB_USERNAME" value="root"/>
+        <env name="DB_PASSWORD" value=""/>
+        <server name="SERVER_NAME" value="staging.touchiz.fr"/>
     </php>
 </phpunit>
