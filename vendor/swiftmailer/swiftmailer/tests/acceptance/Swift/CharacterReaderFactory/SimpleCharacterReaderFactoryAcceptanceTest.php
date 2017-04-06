@@ -5,7 +5,7 @@ class Swift_CharacterReaderFactory_SimpleCharacterReaderFactoryAcceptanceTest ex
     private $_factory;
     private $_prefix = 'Swift_CharacterReader_';
 
-    public function setUp()
+    protected function setUp()
     {
         $this->_factory = new Swift_CharacterReaderFactory_SimpleCharacterReaderFactory();
     }
@@ -65,7 +65,7 @@ class Swift_CharacterReaderFactory_SimpleCharacterReaderFactoryAcceptanceTest ex
         }
 
         foreach (array(437, 737, 850, 855, 857, 858, 860,
-            861, 863, 865, 866, 869,) as $number) {
+            861, 863, 865, 866, 869, ) as $number) {
             $charsets[] = 'cp-'.$number;
             $charsets[] = 'cp'.$number;
             $charsets[] = 'CP-'.$number;
