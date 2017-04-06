@@ -26,7 +26,7 @@ return [
 	|
 	*/
 
-	'default' => 'mysql',
+	'default' => 'mysqltravis',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -58,6 +58,18 @@ return [
 			'database'  => env('DB_DATABASE', 'touchiz'),
 			'username'  => env('DB_USERNAME', 'mihaja'),
 			'password'  => env('DB_PASSWORD', 'gucevabrac2u'),
+			'charset'   => 'utf8',
+			'collation' => 'utf8_unicode_ci',
+			'prefix'    => '',
+			'strict'    => false,
+		],
+
+		'mysqltravis' => [
+			'driver'    => 'mysql',
+			'host'      => env('DB_HOST', '127.0.0.1'),
+			'database'  => env('DB_DATABASE', 'touchiz'),
+			'username'  => env('DB_USERNAME', 'root'),
+			'password'  => env('DB_PASSWORD', ''),
 			'charset'   => 'utf8',
 			'collation' => 'utf8_unicode_ci',
 			'prefix'    => '',
