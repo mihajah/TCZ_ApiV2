@@ -54,7 +54,7 @@ return [
 
 		'mysql' => [
 			'driver'    => 'mysql',
-			'host'      => env('DB_HOST', 'localhost'),
+			'host'      => env('DB_HOST', '217.160.2.97'),
 			'database'  => env('DB_DATABASE', 'touchiz'),
 			'username'  => env('DB_USERNAME', 'mihaja'),
 			'password'  => env('DB_PASSWORD', 'gucevabrac2u'),
@@ -66,7 +66,7 @@ return [
 
 		'pgsql' => [
 			'driver'   => 'pgsql',
-			'host'     => env('DB_HOST', 'localhost'),
+			'host'     => env('DB_HOST', '217.160.2.97'),
 			'database' => env('DB_DATABASE', 'forge'),
 			'username' => env('DB_USERNAME', 'forge'),
 			'password' => env('DB_PASSWORD', ''),
@@ -77,7 +77,7 @@ return [
 
 		'sqlsrv' => [
 			'driver'   => 'sqlsrv',
-			'host'     => env('DB_HOST', 'localhost'),
+			'host'     => env('DB_HOST', '217.160.2.97'),
 			'database' => env('DB_DATABASE', 'forge'),
 			'username' => env('DB_USERNAME', 'forge'),
 			'password' => env('DB_PASSWORD', ''),
