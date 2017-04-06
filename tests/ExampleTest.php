@@ -17,8 +17,13 @@ class ExampleTest extends TestCase {
 	public function testOneCollection()
 	{
 		$response = $this->call('GET', 'collections/1');
-		print_r($response->getContent());
+		print_r($response->getContent()); 
 		$this->assertEquals(200, $response->getStatusCode());
+	}
+
+	private static function watcher()
+	{
+		//
 	}
 
 }
