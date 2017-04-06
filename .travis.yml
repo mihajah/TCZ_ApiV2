@@ -5,3 +5,5 @@ php:
   #- nightly
 script:
   - phpunit
+services:
+  - mysql
