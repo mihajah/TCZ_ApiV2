@@ -10,4 +10,5 @@ services:
 before_install:
   - php artisan cache:clear
   - php artisan config:cache
-  - gunzip < storage/touchiz.sql.gz | mysql -u root -p  touchiz 
+  - export MYSQL_PWD=
+  - gunzip < storage/touchiz.sql.gz | mysql -u root touchiz 
