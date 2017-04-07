@@ -2,7 +2,8 @@
 
 [![Build Status](https://travis-ci.org/mihajah/TCZ_ApiV2.svg?branch=master)](https://travis-ci.org/mihajah/TCZ_ApiV2)
 
-Touchiz API based on Laravel Framework
+Touchiz API based on Laravel Framework. 
+Development url http://staging.touchiz.fr/dev/apiv2
 
 ## Official Documentation
 
