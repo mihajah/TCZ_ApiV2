@@ -11,5 +11,5 @@ before_install:
   - php artisan cache:clear
   - php artisan config:cache
   - export MYSQL_PWD=
-  - mysql -e 'CREATE DATABASE Touchiz;'
+  - mysql -e 'CREATE DATABASE touchiz;'
   - gunzip < storage/touchiz.sql.gz | mysql -u root touchiz 
