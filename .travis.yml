@@ -10,5 +10,4 @@ services:
 before_install:
   - php artisan cache:clear
   - php artisan config:cache
-  - php artisan migrate
-  - gunzip < touchiz.sql.gz | mysql -u root -pgucevabrac2u touchiz 
+  - gunzip < storage/touchiz.sql.gz | mysql -u root -p touchiz 
