@@ -8,6 +8,9 @@ script:
 services:
   - mysql
 before_install:
+  - sudo apt-get install php5-mcrypt
+  - sudo php5enmod mcrypt
+  - sudo service apache2 restart
   - php artisan cache:clear
   - php artisan config:cache
   - export MYSQL_PWD=
