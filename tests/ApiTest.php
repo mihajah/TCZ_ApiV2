@@ -2,27 +2,24 @@
 
 class ApiTest extends TestCase {
 
+
 	/**
-	 * A basic functional test example.
-	 *
-	 * @return void
-	 */
-
-	public function testProductRestApi()
+	* All product API test goes here
+	*/
+	public function testProductApi()
 	{
-		$response = $this->call('GET', 'products');
-		$this->assertEquals(200, $response->getStatusCode());
-
-		$response = $this->call('GET', 'products/3630');
-		$this->assertEquals(200, $response->getStatusCode());
-
-		$response = $this->call('GET', 'products/brands');
-		$this->assertEquals(200, $response->getStatusCode());
+		$route = ['products', 'products/3630', 'products/brands'];
+		foreach($route as $uri)
+		{
+			$this->checkValidHttpResponse($uri);
+		}
 	}
 
-	private static function watcher()
+	private function checkValidHttpResponse($route) //valid response we need is 200
 	{
 		//
+		$response = $this->call('GET', $route);
+		$this->assertEquals(200, $response->getStatusCode());
 	}
 
 }
