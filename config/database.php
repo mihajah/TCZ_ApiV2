@@ -139,3 +139,12 @@ return [
 	],
 
 ];
+
+/**
+*
+.env
+DB_HOST=localhost
+DB_DATABASE=touchiz
+DB_USERNAME=mihaja
+DB_PASSWORD=gucevabrac2u
+*/
