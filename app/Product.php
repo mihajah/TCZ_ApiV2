@@ -241,10 +241,10 @@ class Product extends Model {
 	public static function add($verb) //replace pmanage_createProduct()
 	{
 		$all = $verb->all();
-		$raw = $verb->except('reference', 'tag', 'fordevicewith', 'price', 'quantity', 'supplier', 'fordevice', 'feature', 'active', 'name', '_token'); 
+		$raw = $verb->except('reference', 'tag', 'fordevicewith', 'price', 'quantity', 'supplier', 'fordevice', 'feature', 'active', 'name', '_token', 'unit_test'); 
 		if(count($all) < 13)
 		{
-			return ['succes' => FALSE, 'error' => 'Some basics informations can\'t be left as empty'];
+			return ['success' => FALSE, 'error' => 'Some basics informations can\'t be left as empty'];
 		}
 		//ps properties
 		$otherData = $verb->only('active', 'price', 'name');
@@ -275,7 +275,15 @@ class Product extends Model {
 				PB::product(['id' => $id, 'value' => $verb->input($key)], 'set_'.$key);
 		}
 
-		return self::wsOne($id);
+		$created_data = self::wsOne($id);
+
+		if($all['unit_test'])
+		{
+			DB::table(self::getProp('product_ps_table'))->where('id_product', '=', $id)->delete();
+			self::destroy($id);
+		}	
+
+		return $created_data;
 	}
 
 	public static function edit($verb)
