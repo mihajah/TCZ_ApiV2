@@ -56,3 +56,9 @@ $response = $kernel->handle(
 $response->send();
 
 $kernel->terminate($request, $response);
+
+
+
+/**
+* end of file
+*/
