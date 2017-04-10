@@ -277,7 +277,7 @@ class Product extends Model {
 
 		$created_data = self::wsOne($id);
 
-		if($all['unit_test'])
+		if(isset($all['unit_test']))
 		{
 			DB::table(self::getProp('product_ps_table'))->where('id_product', '=', $id)->delete();
 			self::destroy($id);
@@ -307,15 +307,21 @@ class Product extends Model {
 		$error 	  = [];
 		foreach($all as $k => $v)
 		{
-			if(!in_array($k, $editable))
-			{
-				$error[] = $k;
-			}
+			if($k != 'unit_test')
+				if(!in_array($k, $editable))
+				{
+					$error[] = $k;
+				}
 		}
 
 		if(!empty($error))
 		{
 			return ['success' => FALSE, 'error' => 'Only the following column can be updated', 'column' => $editable];
+		}
+
+		if(isset($all['unit_test']))
+		{
+			return ['unit_test' => 'success'];
 		}
 
 		$ps_column   = PS::getFullSchema();
@@ -325,8 +331,11 @@ class Product extends Model {
 			if(in_array($k, $ps_column))
 			{
 				if($k != 'id_product')
+				{
 					$data[$k] = $v;
 					$error = PS::updateProduct($all['id_product'], $data);
+				}
+					
 			}
 		}
 

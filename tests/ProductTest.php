@@ -10,6 +10,7 @@ class ProductTest extends TestCase {
 	{
 		$this->checkHttpStatus();
 		$this->checkHttpStatus('POST');
+		$this->checkHttpStatus('PUT');
 	}
 
 	private function checkHttpStatus($verb = 'GET') 
@@ -57,6 +58,26 @@ class ProductTest extends TestCase {
 		if($verb == 'PUT')
 		{
 			//
+			$editable = [
+							'id_product'		=> 753, 
+							'name' 				=> 'automatique test unit update testproduct',
+							'suppliername'		=> 'automatique test unit update supplier name', 
+							'brand'				=> '20', 
+							'supplier'			=> '11', 
+							'type'				=> '6', 
+							'subtype'			=> '3', 
+							'pattern'			=> '5', 
+							'collection'		=> '2', 
+							'color'				=> '3', 
+							'material'			=> '5', 
+							'price_reseller'	=> '2', 
+							'price'				=> '1', 
+							'fordevice'			=> '3',
+							'unit_test'			=> TRUE
+						];
+
+			$response = $this->call('PUT', '/products', $editable);
+			$this->assertContains('{"unit_test":"success"', $response->getContent());
 		}
 		
 	}
