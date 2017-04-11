@@ -47,7 +47,7 @@ class Device extends Model {
 
 		foreach($fillable as $field)
 		{
-			if(!$verb->input($field))
+			if(!$verb->has($field))
 			{
 				$empty = TRUE;
 			}
@@ -58,8 +58,14 @@ class Device extends Model {
 			return ['empty' => $empty, 'error' => $fillable];
 		}
 
-		$data = $verb->all();
+		$data = $verb->except('unit_test');
 		$new_data = self::add($data);
+
+		if($verb->has('unit_test'))
+		{
+			self::destroy($new_data['id']);
+		}
+
 		return ['success' => TRUE, 'new_data' => $new_data];
 	}
 
@@ -72,7 +78,7 @@ class Device extends Model {
 
 		foreach($fillable as $field)
 		{
-			if(!$verb->input($field))
+			if(!$verb->has($field))
 			{
 				$empty = TRUE;
 				//echo 'tsis '.$field;

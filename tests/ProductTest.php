@@ -2,15 +2,20 @@
 
 class ProductTest extends TestCase {
 
+	protected $isTestable = TRUE;
 
 	/**
 	* All Product API test goes here
+	* $route are defined at app/Http/routes.php
 	*/
 	public function testRun()
 	{
-		$this->checkHttpStatus();
-		$this->checkHttpStatus('POST');
-		$this->checkHttpStatus('PUT');
+		if($this->isTestable)
+		{
+			$this->checkHttpStatus();
+			$this->checkHttpStatus('POST');
+			$this->checkHttpStatus('PUT');
+		}		
 	}
 
 	private function checkHttpStatus($verb = 'GET') 
