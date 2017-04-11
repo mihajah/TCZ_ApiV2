@@ -15,6 +15,7 @@ class DeviceTest extends TestCase{
 		{
 			$this->checkHttpStatus();
 			$this->checkHttpStatus('POST');
+			$this->checkHttpStatus('PUT');
 		}				
 	}
 
@@ -63,6 +64,32 @@ class DeviceTest extends TestCase{
 
 			$response = $this->call('POST', '/devices', $fillable);
 			$this->assertContains('{"id":', $response->getContent());
+		}
+
+		if($verb == 'PUT')
+		{
+			//
+			$editable = [
+							'id_device'				=> '722',
+							'name' 					=> 'automatique unit test', 
+							'brand'					=> '8', 
+							'id_group'				=>  0, 
+							'os'					=> '80', 
+							'type'					=> '2', 
+							'screen_size'			=> '32', 
+							'code_reference'		=> 'AUT', 
+							'main_connector'		=> '15', 
+							'video_output'			=> '4',
+					 		'external_storage'		=> '13', 
+					 		'bluetooth'				=> '6', 
+					 		'nfc'					=> '7', 
+					 		'ant'					=> '28', 
+					 		'alternative_names'		=> 'an', 
+					 		'full_references'		=> 'automation'
+						];
+
+			$response = $this->call('PUT', '/devices', $editable);
+			$this->assertContains('"success":true', $response->getContent());
 		}
 	}
 
