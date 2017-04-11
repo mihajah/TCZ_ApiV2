@@ -6,14 +6,3 @@ Touchiz API based on Laravel 5.0 Framework.
 
 Development url http://staging.touchiz.fr/dev/apiv2
 
-## Official Documentation
-
---
-
-## Contributing
-
---
-
-### License
-
---
