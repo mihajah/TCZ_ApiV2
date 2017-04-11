@@ -21,7 +21,9 @@ class BrandTest extends TestCase{
 		if($verb == 'GET')
 		{
 			$route = [
-						'brands'
+						'brands',
+						'brands/withdevice',
+						'brands/popular'
 			     	 ];
 
 			foreach($route as $uri)
