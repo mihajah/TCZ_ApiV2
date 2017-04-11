@@ -25,7 +25,11 @@ class ProductTest extends TestCase {
 						'products/device/463',
 						'products/amazone_request/3630',
 						//product manager
-						'pmanage_products/device/450'
+						'pmanage_products/device/450',
+						'pmanage_products/3630',
+						'pmanage_products/box/10026',
+						'pmanage_products/bigdata_brand/8',
+						'pmanage_products'
 					 ];
 
 			foreach($route as $uri)
