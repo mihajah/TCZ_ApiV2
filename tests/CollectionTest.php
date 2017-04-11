@@ -1,10 +1,10 @@
 <?php
-class BrandTest extends TestCase{
+class CollectionTest extends TestCase{
 
 	protected $isTestable = TRUE;
 
 	/**
-	* All Brand API test goes here
+	* All Collection API test goes here
 	* $route are defined at app/Http/routes.php
 	*/
 	public function testRun()
@@ -13,7 +13,7 @@ class BrandTest extends TestCase{
 		if($this->isTestable)
 		{
 			$this->checkHttpStatus();
-		}
+		}	
 	}
 
 	private function checkHttpStatus($verb = 'GET')
@@ -21,9 +21,7 @@ class BrandTest extends TestCase{
 		if($verb == 'GET')
 		{
 			$route = [
-						'brands',
-						'brands/withdevice',
-						'brands/popular'
+						'collections/1'
 			     	 ];
 
 			foreach($route as $uri)

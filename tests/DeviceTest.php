@@ -2,7 +2,7 @@
 
 class DeviceTest extends TestCase{
 
-	protected $isTestable = FALSE;
+	protected $isTestable = TRUE;
 
 	/**
 	* All Device API test goes here
