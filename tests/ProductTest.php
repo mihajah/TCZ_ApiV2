@@ -2,7 +2,7 @@
 
 class ProductTest extends TestCase {
 
-	protected $isTestable = TRUE;
+	protected $isTestable = TRUE; 
 
 	/**
 	* All Product API test goes here
