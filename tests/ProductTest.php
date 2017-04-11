@@ -18,11 +18,14 @@ class ProductTest extends TestCase {
 		if($verb == 'GET')
 		{
 			$route = [
+						//product
 						'products', 
 						'products/3630', 
 						'products/brands', 
 						'products/device/463',
-						'products/amazone_request/3630'
+						'products/amazone_request/3630',
+						//product manager
+						'pmanage_products/device/450'
 					 ];
 
 			foreach($route as $uri)
