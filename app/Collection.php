@@ -44,8 +44,15 @@ class Collection extends Model {
 
 	public static function wsAdd($verb)
 	{
+		$raw = $verb->except('unit_test');
 		$fillable = self::getProp('fillable');
 		$fail = FALSE;
+
+		if(count($raw) != count($fillable))
+		{
+			$fail = TRUE;
+		}
+
 		foreach($fillable as $key)
 		{
 			if(!$verb->has($key))
@@ -56,7 +63,7 @@ class Collection extends Model {
 
 		if($fail)
 		{
-			return ['success' => FALSE];
+			return ['success' => FALSE, 'error' => 'Only those column can be added', 'column' => $fillable];
 		}
 
 		$data = $verb->except('DefaultColors', 'unit_test');
@@ -66,14 +73,43 @@ class Collection extends Model {
 			self::addDefaultColor($insert_id, $color);
 		}
 
-		$fresh = self::wsOne($insert_id);
+		$freshFull = self::wsOne($insert_id);
 		if($verb->has('unit_test'))
 		{
 			self::destroy($insert_id);
 			DB::table(self::getProp('table_dc'))->where('id_collection', '=', $insert_id)->delete();
 		}
 
-		return $fresh;
+		return $freshFull;
+	}
+
+	public static function wsEdit($verb)
+	{
+		$fail = FALSE;
+		$raw = $verb->except('unit_test');
+		$editable = self::getProp('fillable');
+		$editable[] = 'id_collection';
+
+		if(count($raw) != count($editable))
+		{
+			$fail = TRUE;
+		}
+
+		foreach($raw as $k => $v)
+		{
+			if(!in_array($k, $editable))
+			{
+				$fail = TRUE;
+			}	
+		}
+
+		if($fail)
+		{
+			return ['success' => FALSE, 'error' => 'Only those column can be updated', 'column' => $editable];
+		}
+
+		$data = $verb->except('unit_test', 'DefaultColors');
+		return self::edit($data);
 	}
 
 	/**
@@ -85,7 +121,17 @@ class Collection extends Model {
 		return $fresh->id_collection;
 	}
 
-	
+	public static function edit($raw)
+	{
+		$data = [];
+		foreach($raw as $k => $v)
+		{
+			if($k != 'id_collection')
+				$data[$k] = $v;
+		}
+
+		return self::where('id_collection', '=', $raw['id_collection'])->update($data);
+	}	
 
 	public static function getAllId()
 	{

@@ -106,10 +106,13 @@ Route::group(['prefix' => 'collections'], function(){
 
 	//get
 	Route::get('/', ['uses' => 'CollectionController@allCollection']);
+
 	Route::get('/{id}', ['uses' => 'CollectionController@oneCollection']);
 
 	//post
 	Route::post('/', ['uses' => 'CollectionController@store']);
+
+	Route::put('/', ['uses' => 'CollectionController@update']);
 });
 
 /**

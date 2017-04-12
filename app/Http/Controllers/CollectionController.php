@@ -82,9 +82,10 @@ class CollectionController extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function update($id)
+	public function update(Request $verb)
 	{
 		//
+		return Collection::wsEdit($verb);
 	}
 
 	/**
