@@ -109,8 +109,8 @@ class Collection extends Model {
 		}
 
 		$data = $verb->except('unit_test', 'DefaultColors');
-		self::edit($data);
-		DB::table(self::getProp('table_dc'))->where('id_collection', '=', $data['id_collection'])->delete();
+		self::edit($data);		
+		
 		$dc = $verb->input('DefaultColors');
 		if(count($dc) > 0)
 		{
@@ -142,7 +142,9 @@ class Collection extends Model {
 				$data[$k] = $v;
 		}
 
-		return self::where('id_collection', '=', $raw['id_collection'])->update($data);
+		$return = self::where('id_collection', '=', $raw['id_collection'])->update($data);
+		DB::table(self::getProp('table_dc'))->where('id_collection', '=', $raw['id_collection'])->delete();
+		return $return;
 	}	
 
 	public static function getAllId()
