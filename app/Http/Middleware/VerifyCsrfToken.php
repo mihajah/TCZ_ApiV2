@@ -9,7 +9,8 @@ class VerifyCsrfToken extends BaseVerifier {
 							'products',
 							'products/*',
 							'devices',
-							'devices/*'
+							'devices/*',
+							'collections'
 						];
 
 	/**

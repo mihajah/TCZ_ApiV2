@@ -16,6 +16,9 @@ class Collection extends Model {
 	protected $table_features	= 'apb_features';
 	protected $table_color		= 'apb_colors';
 	protected $table_dc			= 'apb_collections_defaultcolor';
+	protected $fillable			= ['collection_name', 'alt_name', 'id_supplier', 'price', 'price_touchiz', 'forDeviceType', 'type',
+									'subtype', 'material', 'pattern', 'feature1', 'feature2', 'feature3', 'feature4', 'feature5',
+									'classic', 'DefaultColors'];
 
 	use ModelGetProperties;
 
@@ -39,9 +42,50 @@ class Collection extends Model {
 		return $all;
 	}
 
+	public static function wsAdd($verb)
+	{
+		$fillable = self::getProp('fillable');
+		$fail = FALSE;
+		foreach($fillable as $key)
+		{
+			if(!$verb->has($key))
+			{
+				$fail = TRUE;
+			}
+		}
+
+		if($fail)
+		{
+			return ['success' => FALSE];
+		}
+
+		$data = $verb->except('DefaultColors', 'unit_test');
+		$insert_id = self::add($data);
+		foreach($verb->input('DefaultColors') as $color)
+		{
+			self::addDefaultColor($insert_id, $color);
+		}
+
+		$fresh = self::wsOne($insert_id);
+		if($verb->has('unit_test'))
+		{
+			self::destroy($insert_id);
+			DB::table(self::getProp('table_dc'))->where('id_collection', '=', $insert_id)->delete();
+		}
+
+		return $fresh;
+	}
+
 	/**
 	* Public method
 	*/
+	public static function add($data)
+	{
+		$fresh = self::create($data);
+		return $fresh->id_collection;
+	}
+
+	
 
 	public static function getAllId()
 	{
@@ -168,6 +212,14 @@ class Collection extends Model {
 	/**
 	* Internal method
 	*/
+
+	protected static function addDefaultColor($collectionId, $colorId)
+	{
+		$table_dc = self::getProp('table_dc');
+		$data = ['id_collection' => $collectionId, 'id_color' => $colorId];
+		DB::table($table_dc)->insert($data);
+	}
+
 	protected static function remapCollectionAttributes($id, $vmode = 'obj')
 	{
 		if(!self::find($id))

@@ -33,9 +33,11 @@ class CollectionController extends Controller {
 	 *
 	 * @return Response
 	 */
-	public function store()
+	public function store(Request $verb)
 	{
 		//
+		$data = Collection::wsAdd($verb);
+		return $data;
 	}
 
 	/**
