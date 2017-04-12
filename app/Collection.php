@@ -27,9 +27,39 @@ class Collection extends Model {
 		return self::getFullSchema($id);
 	}
 
+	public static function wsAll()
+	{
+		$all = [];
+		$collectionId = self::getAllId();
+		foreach($collectionId as $one)
+		{
+			$all[] = self::wsOne($one);
+		}
+
+		return $all;
+	}
+
 	/**
 	* Public method
 	*/
+
+	public static function getAllId()
+	{
+		$collection = [];
+		$result = self::select('id_collection')->get();
+		if(count($result) == 0)
+		{
+			return [];
+		}
+
+		foreach($result as $id)
+		{
+			$collection[] = $id->id_collection;
+		}
+
+		return $collection;
+	}
+
 	public static function getFullSchema($id, $display = 'both')
 	{
 		$full = self::remapCollectionAttributes($id, 'arr');
@@ -193,7 +223,7 @@ class Collection extends Model {
 		}
 
 		$data 						= [];
-		$data['id_collection'] 		= $link->id_collection;
+		$data['id'] 		= $link->id_collection;
 		$data['name']				= $link->collection_name;
 		$data['altname']			= $link->alt_name;
 		$data['supplier']			= $link->id_supplier;

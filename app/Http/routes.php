@@ -105,6 +105,7 @@ Route::group(['prefix' => 'devices'], function(){
 Route::group(['prefix' => 'collections'], function(){
 
 	//get
+	Route::get('/', ['uses' => 'CollectionController@allCollection']);
 	Route::get('/{id}', ['uses' => 'CollectionController@oneCollection']);
 });
 

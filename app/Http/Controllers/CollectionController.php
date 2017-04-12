@@ -50,6 +50,19 @@ class CollectionController extends Controller {
 		return Collection::wsOne($id);
 	}
 
+
+	/**
+	 * Display the specified resource.
+	 *
+	 * @param  int  $id
+	 * @return Response
+	 */
+	public function allCollection()
+	{
+		//
+		return Collection::wsAll();
+	}
+
 	/**
 	 * Show the form for editing the specified resource.
 	 *
