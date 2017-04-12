@@ -109,7 +109,19 @@ class Collection extends Model {
 		}
 
 		$data = $verb->except('unit_test', 'DefaultColors');
-		return self::edit($data);
+		self::edit($data);
+		DB::table(self::getProp('table_dc'))->where('id_collection', '=', $data['id_collection'])->delete();
+		$dc = $verb->input('DefaultColors');
+		if(count($dc) > 0)
+		{
+			foreach($dc as $color)
+			{
+				self::addDefaultColor($data['id_collection'], $color);
+			}
+		}
+
+		return ['success' => true];
+		
 	}
 
 	/**
