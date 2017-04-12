@@ -21,6 +21,7 @@ class CollectionTest extends TestCase{
 		if($verb == 'GET')
 		{
 			$route = [
+						'collections',
 						'collections/1'
 			     	 ];
 
