@@ -44,9 +44,9 @@ class Collection extends Model {
 
 	public static function wsAdd($verb)
 	{
-		$raw = $verb->except('unit_test');
-		$fillable = self::getProp('fillable');
-		$fail = FALSE;
+		$raw 		= $verb->except('unit_test');
+		$fillable 	= self::getProp('fillable');
+		$fail 		= FALSE;
 
 		if(count($raw) != count($fillable))
 		{
@@ -85,9 +85,9 @@ class Collection extends Model {
 
 	public static function wsEdit($verb)
 	{
-		$fail = FALSE;
-		$raw = $verb->except('unit_test');
-		$editable = self::getProp('fillable');
+		$fail 		= FALSE;
+		$raw 		= $verb->except('unit_test');
+		$editable 	= self::getProp('fillable');
 		$editable[] = 'id_collection';
 
 		if(count($raw) != count($editable))
@@ -110,7 +110,7 @@ class Collection extends Model {
 
 		$data = $verb->except('unit_test', 'DefaultColors');
 		self::edit($data);		
-		
+
 		$dc = $verb->input('DefaultColors');
 		if(count($dc) > 0)
 		{
