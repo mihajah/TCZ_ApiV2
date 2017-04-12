@@ -13,6 +13,8 @@ class CollectionTest extends TestCase{
 		if($this->isTestable)
 		{
 			$this->checkHttpStatus();
+			$this->checkHttpStatus('POST');
+			$this->checkHttpStatus('PUT');
 		}	
 	}
 
@@ -30,6 +32,16 @@ class CollectionTest extends TestCase{
 				$this->checkValidHttpResponse($uri);
 			}
 		}		
+
+		if($verb == 'POST')
+		{
+			//
+		}
+
+		if($verb == 'PUT')
+		{
+			//
+		}
 	}
 
 	private function checkValidHttpResponse($route)
