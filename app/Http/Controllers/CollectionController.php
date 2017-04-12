@@ -36,8 +36,7 @@ class CollectionController extends Controller {
 	public function store(Request $verb)
 	{
 		//
-		$data = Collection::wsAdd($verb);
-		return $data;
+		return Collection::wsAdd($verb);
 	}
 
 	/**
