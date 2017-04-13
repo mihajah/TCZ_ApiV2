@@ -107,7 +107,8 @@ Route::group(['prefix' => 'collections'], function(){
 	//get
 	Route::get('/', ['uses' => 'CollectionController@allCollection']);
 
-	Route::get('/{id}', ['uses' => 'CollectionController@oneCollection']);
+	Route::get('/{id}', ['uses' => 'CollectionController@oneCollection'])
+	->where('id', '[0-9]+');
 
 	//post
 	Route::post('/', ['uses' => 'CollectionController@store']);
@@ -126,5 +127,18 @@ Route::group(['prefix' => 'brands'], function(){
 	Route::get('/withdevice', ['uses' => 'BrandController@getWithDevice']);
 
 	Route::get('/popular', ['uses' => 'BrandController@getPopular']);
+
+});
+
+/**
+* Customers route
+*/
+Route::group(['prefix' => 'customers'], function(){
+
+	//get
+	Route::get('/', ['uses' => 'CustomerController@allCustomer']);
+
+	Route::get('/{id}', ['uses' => 'CustomerController@oneCustomer'])
+	->where('id', '[0-9]+');
 
 });
