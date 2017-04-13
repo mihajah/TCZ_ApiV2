@@ -27,7 +27,14 @@ class Customer extends Model {
 	public static function wsAll()
 	{
 		//
+		$all = [];
+		$ids = self::getAllId();
+		foreach($ids as $one)
+		{
+			$all[] = self::wsOne($one);
+		}
 
+		return $all;
 	}
 
 	/**
