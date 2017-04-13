@@ -53,7 +53,8 @@ class CollectionTest extends TestCase{
 							'feature4'			=> '4', 
 							'feature5'			=> '5',
 							'classic'			=> '0', 
-							'DefaultColors'		=> [1, 2]
+							'DefaultColors'		=> [1, 2],
+							'unit_test'			=> TRUE
 						];
 
 			$response = $this->call('POST', '/collections', $fillable);
@@ -63,6 +64,30 @@ class CollectionTest extends TestCase{
 		if($verb == 'PUT')
 		{
 			//
+			$editable = [
+							'id_collection'		=> '58',
+							'collection_name' 	=> 'automatique unit test', 
+							'alt_name'			=> 'automatique unit test', 
+							'id_supplier'		=> '2', 
+							'price'				=> '1.0', 
+							'price_touchiz'		=> '1.5', 
+							'forDeviceType'		=> '1', 
+							'type'				=> '1',
+							'subtype'			=> '1', 
+							'material'			=> '2', 
+							'pattern'			=> '2', 
+							'feature1'			=> '1', 
+							'feature2'			=> '2', 
+							'feature3'			=> '3', 
+							'feature4'			=> '4', 
+							'feature5'			=> '5',
+							'classic'			=> '0', 
+							'DefaultColors'		=> [1, 2],
+							'unit_test'			=> TRUE
+						];
+
+			$response = $this->call('PUT', '/collections', $editable);
+			$this->assertContains('{"success":true', $response->getContent());
 		}
 	}
 
