@@ -70,7 +70,7 @@ class DeviceTest extends TestCase{
 		{
 			//
 			$editable = [
-							'id_device'				=> '722',
+							'id_device'				=> '708',
 							'name' 					=> 'automatique unit test', 
 							'brand'					=> '8', 
 							'id_group'				=>  0, 
