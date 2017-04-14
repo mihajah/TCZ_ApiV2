@@ -143,4 +143,9 @@ Route::group(['prefix' => 'customers'], function(){
 
 	Route::get('/connect/{key}', ['uses' => 'CustomerController@connectByKey']);
 
+	//post
+	Route::post('/', ['uses' => 'CustomerController@store']);
+
+	Route::put('/', ['uses' => 'CustomerController@update']);
+
 });

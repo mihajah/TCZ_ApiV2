@@ -33,9 +33,10 @@ class CustomerController extends Controller {
 	 *
 	 * @return Response
 	 */
-	public function store()
+	public function store(Request $verb)
 	{
 		//
+		return Customer::wsAdd($verb);
 	}
 
 	/**
@@ -91,7 +92,7 @@ class CustomerController extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function edit($id)
+	public function edit()
 	{
 		//
 	}
@@ -102,9 +103,10 @@ class CustomerController extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function update($id)
+	public function update(Request $verb)
 	{
 		//
+		return Customer::wsEdit($verb);
 	}
 
 	/**

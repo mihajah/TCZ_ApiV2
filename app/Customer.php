@@ -42,9 +42,136 @@ class Customer extends Model {
 		return self::connect($key);
 	}
 
+	public static function wsAdd($verb)
+	{
+		$data 			= [];
+		$fail	 	 	= FALSE;
+		$all 	 	 	= $verb->all();
+		$minimum 	 	= [
+							'named',
+							'enseigne',
+							'adresse',
+							'adresse_pc',
+							'adresse_ville',
+							'adresse_pays',
+							'phone1',
+							'firstname',
+							'lastname',
+							'email'
+					   	  ];
+
+		$first_infos 	= [
+							'name'
+					   	  ];
+
+		foreach($minimum as $must)
+		{
+			if(!$verb->has($must))
+			{
+				$fail = TRUE;
+			}
+			else
+			{
+				if($must == 'enseigne')
+				{
+					$data['franchise'] = $verb->input($must); 
+				}
+				else
+				{
+					$data[$must] = $verb->input($must); 
+				}	
+			}
+		}
+
+		if($fail)
+		{
+			return ['success' => FALSE, 'error' => 'Those column can\'t be left as empty', 'column' => $minimum];
+		}
+
+		foreach($first_infos as $fi)
+		{
+			if(!$verb->has($fi))
+			{
+				$fail = TRUE;
+			}
+			else
+			{
+				$data[$fi] = $verb->input($fi); 				
+			}
+		}
+
+		if($fail)
+		{
+			return ['success' => FALSE, 'error' => 'Those column can\'t be left as empty', 'column' => $first_infos];
+		}
+
+		$data['adressef'] = $verb->input('adresse');
+		if($verb->has('adressef'))
+			$data['adressef'] = $verb->input('adressef');
+
+		$data['adressef_pc'] = $verb->input('adresse_pc');
+		if($verb->has('adressef_pc'))
+			$data['adressef_pc'] = $verb->input('adressef_pc');
+
+		$data['adressef_ville'] = $verb->input('adresse_ville');
+		if($verb->has('adressef_ville'))
+			$data['adressef_ville'] = $verb->input('adressef_ville');
+
+		$data['adressef_pays'] = $verb->input('adresse_pays');
+		if($verb->has('adressef_pays'))
+			$data['adressef_pays'] = $verb->input('adressef_pays');
+
+		$data['firstnamef'] = $verb->input('firstname');
+		if($verb->has('firstnamef'))
+			$data['firstnamef'] = $verb->input('firstnamef');
+
+		$data['lastnamef'] = $verb->input('lastname');
+		if($verb->has('lastnamef'))
+			$data['lastnamef'] = $verb->input('lastnamef');
+
+		$data['phone1'] = $verb->input('phone1');
+
+		if($verb->has('phone2'))
+			$data['phone2'] = $verb->input('phone2');
+
+		if($verb->has('phone3'))
+			$data['phone3'] = $verb->input('phone3');
+
+		if($verb->has('phone4'))
+			$data['phone4'] = $verb->input('phone4');
+
+		$data['email'] = $verb->input('email');
+
+		$inserted_id = self::add($data);
+		return self::wsOne($inserted_id);
+	}
+
+	public static function wsEdit($verb)
+	{
+		//
+		print_r($verb->all());
+	}
+
 	/**
 	* Public method
 	*/
+	public static function edit($data)
+	{
+		//
+	}
+
+	public static function add($data)
+	{
+		$self = new self;
+		foreach($data as $k => $v)
+		{
+			$self->$k = $v;
+		}
+
+		$self->save();
+		return $self->id_customer;
+	}
+
 	public static function connect($key)
 	{
 		$result = ['success' => FALSE];
