@@ -141,4 +141,6 @@ Route::group(['prefix' => 'customers'], function(){
 	Route::get('/{id}', ['uses' => 'CustomerController@oneCustomer'])
 	->where('id', '[0-9]+');
 
+	Route::get('/connect/{key}', ['uses' => 'CustomerController@connectByKey']);
+
 });

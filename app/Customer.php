@@ -37,9 +37,27 @@ class Customer extends Model {
 		return $all;
 	}
 
+	public static function wsConnect($key)
+	{
+		return self::connect($key);
+	}
+
 	/**
 	* Public method
 	*/
+	public static function connect($key)
+	{
+		$result = ['success' => FALSE];
+		$customer = self::where('key', '=', $key)->first();
+		if(count($customer) > 0)
+		{
+			$result['success'] 	= TRUE;
+			$result['customer']	= self::wsOne($customer->id_customer);
+		}	
+
+		return $result;
+	} 
+
 	public static function getAllId()
 	{
 		$customer = [];

@@ -63,6 +63,18 @@ class CustomerController extends Controller {
 	}
 
 	/**
+	 * Connect customer by key
+	 *
+	 * @param  int  $id
+	 * @return Response
+	 */
+	public function connectByKey($key)
+	{
+		//
+		return Customer::wsConnect($key);
+	}
+
+	/**
 	 * Display the specified resource.
 	 *
 	 * @param  int  $id
