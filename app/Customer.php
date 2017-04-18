@@ -7,7 +7,7 @@ use DB;
 class Customer extends Model {
 
 	//
-	protected $table 			= 'apb_customers';
+	protected $table 		= 'apb_customers';
 	protected $primaryKey 		= 'id_customer';
 	protected $table_css		= 'apb_customer_stock_software';
 	protected $table_franchise 	= 'apb_franchises';
@@ -58,11 +58,11 @@ class Customer extends Model {
 							'firstname',
 							'lastname',
 							'email'
-					   	  ];
+					  ];
 
-		$first_infos 	= [
+		$first_infos 		= [
 							'name'
-					   	  ];
+					  ];
 
 		foreach($minimum as $must)
 		{
@@ -143,7 +143,7 @@ class Customer extends Model {
 		$data['email']	= $verb->input('email');
 
 		$inserted_id 	= self::add($data);
-		$final			= self::wsOne($inserted_id);
+		$final		= self::wsOne($inserted_id);
 
 		if($verb->has('unit_test'))
 		{
@@ -171,11 +171,11 @@ class Customer extends Model {
 		$all 	  = $verb->all();
 
 		$editable = [
-						'to_callback',
-						'status',
-						'newsletter',
-						'notes'
-					];
+				'to_callback',
+				'status',
+				'newsletter',
+				'notes'
+			    ];
 
 		if(count($needed) != count($editable))
 		{
