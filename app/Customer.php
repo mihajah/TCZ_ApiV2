@@ -206,6 +206,9 @@ class Customer extends Model {
 		{
 			if($k != 'id_customer' && $k != 'unit_test')
 				$data[$k] = $v;
+
+			if($k == 'notes')
+				$data[$k] = urlencode($v);
 		}
 
 		return self::where('id_customer', '=', $raw['id_customer'])->update($data);
@@ -421,7 +424,7 @@ class Customer extends Model {
 										'account'	=> $db->rib_compte,
 										'key'		=> $db->rib_cle
 									  ];
-		$data['note']				= urldecode($db->notes);
+		$data['notes']				= urldecode($db->notes);
 		$data['newsletter']			= ($db->newsletter == 1) ? ['value' => $db->newsletter, 'send' => 'yes'] : ['value' => $db->newsletter, 'send' => 'no'];
 		
 		if($vmode == 'obj')
