@@ -13,3 +13,6 @@ before_install:
   - export MYSQL_PWD=
   - mysql -e 'CREATE DATABASE touchiz;'
   - gunzip < storage/touchiz.sql.gz | mysql -u root touchiz 
+cache:
+ directories:
+  - $HOME/.composer/cache
