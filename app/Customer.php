@@ -149,7 +149,46 @@ class Customer extends Model {
 	public static function wsEdit($verb)
 	{
 		//
-		print_r($verb->all());
+		if(!$verb->has('id'))
+		{
+			return ['success' => FALSE, 'error' => 'id field must be provided'];
+		}
+
+		if(!self::find($verb->input('id')))
+		{
+			return ['success' => FALSE, 'error' => 'Customer not found'];
+		}
+
+		$fail 	  = FALSE;
+		$needed   = $verb->except('id', 'unit_test');
+
+		$editable = [
+						'to_callback',
+						'status',
+						'newsletter',
+						'notes'
+					];
+
+		if(count($needed) != count($editable))
+		{
+			return ['success' => FALSE, 'error' => 'Only those column can be edited', 'column' => $editable];
+		}
+
+		foreach($editable as $field)
+		{
+			if(!$verb->has($field))
+			{
+				$fail = TRUE;
+			}
+		}
+
+		if($fail)
+		{
+			return ['success' => FALSE, 'error' => 'Only those column can be edited', 'column' => $editable];
+		}
+
+
+		
 	}
 
 	/**
