@@ -149,18 +149,19 @@ class Customer extends Model {
 	public static function wsEdit($verb)
 	{
 		//
-		if(!$verb->has('id'))
+		if(!$verb->has('id_customer'))
 		{
-			return ['success' => FALSE, 'error' => 'id field must be provided'];
+			return ['success' => FALSE, 'error' => 'id_customer field must be provided'];
 		}
 
-		if(!self::find($verb->input('id')))
+		if(!self::find($verb->input('id_customer')))
 		{
 			return ['success' => FALSE, 'error' => 'Customer not found'];
 		}
 
 		$fail 	  = FALSE;
-		$needed   = $verb->except('id', 'unit_test');
+		$needed   = $verb->except('id_customer', 'unit_test');
+		$all 	  = $verb->all();
 
 		$editable = [
 						'to_callback',
@@ -188,15 +189,26 @@ class Customer extends Model {
 		}
 
 
-		
+		$updated = self::edit($all);
+		if($updated)
+		{
+			return self::wsOne($all['id_customer']);
+		}
 	}
 
 	/**
 	* Public method
 	*/
-	public static function edit($data)
+	public static function edit($raw)
 	{
 		//
+		foreach($raw as $k => $v)
+		{
+			if($k != 'id_customer' && $k != 'unit_test')
+				$data[$k] = $v;
+		}
+
+		return self::where('id_customer', '=', $raw['id_customer'])->update($data);
 	}
 
 	public static function add($data)
