@@ -110,7 +110,7 @@ Route::group(['prefix' => 'collections'], function(){
 	Route::get('/{id}', ['uses' => 'CollectionController@oneCollection'])
 	->where('id', '[0-9]+');
 
-	//post
+	//post, put
 	Route::post('/', ['uses' => 'CollectionController@store']);
 
 	Route::put('/', ['uses' => 'CollectionController@update']);
@@ -143,7 +143,7 @@ Route::group(['prefix' => 'customers'], function(){
 
 	Route::get('/connect/{key}', ['uses' => 'CustomerController@connectByKey']);
 
-	//post
+	//post, put
 	Route::post('/', ['uses' => 'CustomerController@store']);
 
 	Route::put('/', ['uses' => 'CustomerController@update']);
