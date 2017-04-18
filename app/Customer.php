@@ -140,10 +140,10 @@ class Customer extends Model {
 		if($verb->has('phone4'))
 			$data['phone4'] = $verb->input('phone4');
 
-		$data['email'] 	= $verb->input('email');
+		$data['email']	= $verb->input('email');
 
 		$inserted_id 	= self::add($data);
-		$final		 	= self::wsOne($inserted_id);
+		$final			= self::wsOne($inserted_id);
 
 		if($verb->has('unit_test'))
 		{
