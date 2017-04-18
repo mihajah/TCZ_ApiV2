@@ -140,10 +140,17 @@ class Customer extends Model {
 		if($verb->has('phone4'))
 			$data['phone4'] = $verb->input('phone4');
 
-		$data['email'] = $verb->input('email');
+		$data['email'] 	= $verb->input('email');
 
-		$inserted_id = self::add($data);
-		return self::wsOne($inserted_id);
+		$inserted_id 	= self::add($data);
+		$final		 	= self::wsOne($inserted_id);
+
+		if($verb->has('unit_test'))
+		{
+			self::destroy($inserted_id);
+		}
+
+		return $final;
 	}
 
 	public static function wsEdit($verb)

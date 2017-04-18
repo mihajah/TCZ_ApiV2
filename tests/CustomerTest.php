@@ -13,6 +13,8 @@ class CustomerTest extends TestCase{
 		if($this->isTestable)
 		{
 			$this->checkHttpStatus();
+			$this->checkHttpStatus('POST');
+			$this->checkHttpStatus('PUT');			
 		}
 	}
 
@@ -36,11 +38,39 @@ class CustomerTest extends TestCase{
 		if($verb == 'POST')
 		{
 			//
+			$fillable = [
+							'named' 		=> 'automatique unit test', 
+							'enseigne'		=> 'aut', 
+							'adresse'		=> 'adresse test', 
+							'adresse_pc'	=> '7500', 
+							'adresse_ville'	=> 'ville', 
+							'adresse_pays'	=> 'france', 
+							'phone1'		=> '123456789', 
+							'firstname'		=> 'fi', 
+							'lastname'		=> 'ln',
+					 		'email'			=> 'raw@mail.fr', 
+					 		'name'			=> 'namesix', 
+					 		'unit_test'		=> TRUE
+						];
+
+			$response = $this->call('POST', '/customers', $fillable);
+			$this->assertContains('{"id":', $response->getContent());
 		}
 
 		if($verb == 'PUT')
 		{
 			//
+			$editable = [
+							'id_customer'	=> 276,
+							'to_callback' 	=> 0, 
+							'status'		=> 0, 
+							'newsletter'	=> 1, 
+							'notes'			=> urlencode('my str'),  
+					 		'unit_test'		=> TRUE
+						];
+
+			$response = $this->call('PUT', '/customers', $editable);
+			$this->assertContains('{"id":', $response->getContent());
 		}
 	}
 
