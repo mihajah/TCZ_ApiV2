@@ -149,3 +149,21 @@ Route::group(['prefix' => 'customers'], function(){
 	Route::put('/', ['uses' => 'CustomerController@update']);
 
 });
+
+/**
+* Calls route
+*/
+Route::group(['prefix' => 'calls'], function(){
+
+	//get
+	Route::get('/', ['uses' => 'CallsController@allCalls']);
+
+	Route::get('/{id}', ['uses' => 'CallsController@oneCalls'])
+	->where('id', '[0-9]+');
+
+	Route::get('/customer/{id}', ['uses' => 'CallsController@byCustomer'])
+	->where('id', '[0-9]+');
+
+	Route::get('/lastcall/customer/{id}', ['uses' => 'CallsController@lastCall'])
+	->where('id', '[0-9]+');
+});
