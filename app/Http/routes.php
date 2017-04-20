@@ -166,4 +166,13 @@ Route::group(['prefix' => 'calls'], function(){
 
 	Route::get('/lastcall/customer/{id}', ['uses' => 'CallsController@lastCall'])
 	->where('id', '[0-9]+');
+
+	//post, put
+	Route::post('/', ['uses' => 'CallsController@store']);
+
+	Route::put('/', ['uses' => 'CallsController@update']);
+
+	//delete
+	Route::delete('/{id}', ['uses' => 'CallsController@destroy'])
+	->where('id', '[0-9]+');
 });

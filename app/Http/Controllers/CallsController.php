@@ -33,9 +33,10 @@ class CallsController extends Controller {
 	 *
 	 * @return Response
 	 */
-	public function store()
+	public function store(Request $verb)
 	{
 		//
+		return Call::wsAdd($verb);
 	}
 
 	/**
@@ -115,9 +116,10 @@ class CallsController extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function update($id)
+	public function update(Request $verb)
 	{
 		//
+		return Call::wsEdit($verb);
 	}
 
 	/**
@@ -129,6 +131,14 @@ class CallsController extends Controller {
 	public function destroy($id)
 	{
 		//
+		$response = ['success' => TRUE, 'error' => 'no error'];
+		$deleted =  Call::wsDelete($id);
+		if(!$deleted)
+		{
+			$response = ['success' => FALSE, 'error' => 'Fail when deleting call'];
+		}
+
+		return $response;
 	}
 
 }

@@ -3,6 +3,7 @@
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\ModelGetProperties;
 use DB;
+use App\Customer;
 
 class Call extends Model {
 
@@ -47,7 +48,7 @@ class Call extends Model {
 		$result = self::find($id);
 		if(count($result) > 0)
 		{
-			$one[] = [
+			$one = [
 						'id' 		=> $result->id_call,
 						'customer' 	=> $result->id_customer,
 						'notes' 	=> urldecode($result->note),
@@ -88,7 +89,7 @@ class Call extends Model {
 		$result = self::where('id_customer', '=', $id)->orderBy('date', 'desc')->first();
 		if(count($result) > 0)
 		{
-			$last[] = 	[
+			$last  = 	[
 							'id' 		=> $result->id_call,
 							'customer' 	=> $result->id_customer,
 							'notes' 	=> urldecode($result->note),
@@ -101,10 +102,136 @@ class Call extends Model {
 		return $last;
 	}
 
+	public static function wsAdd($verb)
+	{
+		$fail = FALSE;
+		$all = $verb->except('unit_test', 'status');
+		$fillable = [
+						'id_customer',
+						'note',
+						'date'
+					];
+
+		if(count($all) != count($fillable))
+		{
+			return ['success' => FALSE, 'error' => 'Only those column can be added', 'column' => $fillable];
+		}
+
+		foreach($fillable as $key)
+		{
+			if(!$verb->has($key))
+			{
+				$fail = TRUE;
+			}
+		}
+
+		if($fail)
+		{
+			return ['success' => FALSE, 'error' => 'Only those column can be added', 'column' => $fillable];
+		}
+
+		if(!$verb->has('status'))
+		{
+			$all['status'] = 1;
+		}
+
+		$created 	= self::add($all);
+		$fresh 		= self::wsOne($created);
+
+		if($verb->has('unit_test'))
+		{
+			self::destroy($created);
+		}
+
+		return $fresh;
+	}
+
+	public static function wsEdit($verb)
+	{
+		$fail = FALSE;
+		$all = $verb->only('note', 'date');
+		if(!self::find($verb->input('id')))
+		{
+			return ['success' => FALSE, 'error' => 'Call not found'];
+		}
+
+		$editable 	= 	[
+							'note',
+							'date'
+						];
+
+		$facultatif =	[
+							'status',
+							'flag'
+						];
+
+		foreach($editable as $key)
+		{
+			if(!$verb->has($key))
+			{
+				$fail = TRUE;
+			}
+		}
+
+		if($fail)
+		{
+			return ['success' => FALSE, 'error' => 'You must provide at least those field', 'field' => $editable];
+		}
+
+		foreach($facultatif as $key)
+		{
+			if($verb->has($key))
+			{
+				$all[$key] = $verb->input($key);
+			}
+		}
+
+		$all['id_call'] = $verb->input('id');
+		
+		self::edit($all);	
+		return self::wsOne($all['id_call']);
+	}
+
+	public static function wsDelete($id)
+	{
+		return self::destroy($id);
+	}
+
 
 	/**
 	* Public Method
 	*/
+	public static function add($data)
+	{
+		$call = new self;
+		foreach($data as $k => $v)
+		{
+			if($k == 'note')
+			{
+				$call->$k = urlencode($v);
+			}
+			else
+			{
+				$call->$k = $v;
+			}			
+		}
+
+		$call->save();
+		Customer::where('id_customer', '=', $data['id_customer'])->update(['alreadycalled' => 1]);
+		return $call->id_call;
+	}
+
+	public static function edit($raw)
+	{
+		foreach($raw as $k => $v)
+		{
+			if($k != 'id_call')
+				$data[$k] = $v;
+		}
+
+		self::where('id_call', '=', $raw['id_call'])->update($data);
+	}
+
 	public static function getCallStatus($id)
 	{
 		//

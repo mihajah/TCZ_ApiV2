@@ -13,7 +13,9 @@ class VerifyCsrfToken extends BaseVerifier {
 							'collections',
 							'collections/*',
 							'customers',
-							'customers/*'
+							'customers/*',
+							'calls',
+							'calls/*'
 						];
 
 	/**
