@@ -176,3 +176,22 @@ Route::group(['prefix' => 'calls'], function(){
 	Route::delete('/{id}', ['uses' => 'CallsController@destroy'])
 	->where('id', '[0-9]+');
 });
+
+/**
+* Orders route
+*/
+Route::group(['prefix' => 'orders'], function(){
+
+	//get
+	Route::get('/', ['uses' => 'OrderController@allOrder']);
+
+	Route::get('/{id}', ['uses' => 'OrderController@oneOrder'])
+	->where('id', '[0-9]+');
+
+	Route::get('/customer/{id}', ['uses' => 'OrderController@forCustomer'])
+	->where('id', '[0-9]+');
+
+	Route::get('/cart/{id}', ['uses' => 'OrderController@showCart'])
+	->where('id', '[0-9]+');
+
+});
