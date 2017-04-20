@@ -194,4 +194,6 @@ Route::group(['prefix' => 'orders'], function(){
 	Route::get('/cart/{id}', ['uses' => 'OrderController@showCart'])
 	->where('id', '[0-9]+');
 
+	Route::get('/toShip', ['uses' => 'OrderController@toShip']);
+
 });

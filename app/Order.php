@@ -65,6 +65,27 @@ class Order extends Model {
 		return self::getTmpCart($id, FALSE);
 	}
 
+	public static function wsToShip()
+	{
+		$toShip = [];
+		$id = self::getAllId();
+		if(count($id) == 0)
+		{
+			return [];
+		}
+
+		foreach($id as $one)
+		{
+			$newOrder = self::getFullSchema($one->id_reseller_order, FALSE);
+			if($newOrder['status'] == 2)
+			{
+				$toShip[] = $newOrder;
+			}
+		}
+
+		return $toShip;
+	}
+
 
 	/**
 	* Public Method
