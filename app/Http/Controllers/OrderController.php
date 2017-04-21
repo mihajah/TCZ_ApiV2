@@ -33,9 +33,10 @@ class OrderController extends Controller {
 	 *
 	 * @return Response
 	 */
-	public function store()
+	public function store(Request $verb)
 	{
 		//
+		return Order::wsAdd($verb);
 	}
 
 	/**
@@ -107,6 +108,18 @@ class OrderController extends Controller {
 	{
 		//
 		return Order::wsToShip();
+	}
+
+	/**
+	 * Display the specified resource.
+	 *
+	 * @param  int  $id
+	 * @return Response
+	 */
+	public function withEan($id)
+	{
+		//
+		return Order::wsWithEan($id);
 	}
 
 	/**

@@ -4,6 +4,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Traits\ModelGetProperties;
 use DB;
 use App\Customer;
+use App\Product;
 
 class Order extends Model {
 
@@ -86,10 +87,73 @@ class Order extends Model {
 		return $toShip;
 	}
 
+	public static function wsWithEan($id)
+	{
+		$order = self::getFullSchema($id, FALSE);
+		if(count($order['cart']) == 0)
+		{
+			return ['success' => FALSE];
+		}
+
+		$str 			= "label front;label back;ean\r\n";
+		$product_list 	= [];
+
+		foreach($order['cart'] as $cart)
+		{
+			foreach($cart as $k => $v)
+			{
+				$product 		= Product::wsOne($k, 'obj');
+				$product_list[] = ['id' => $product->id];
+				for($i=0; $i<$v; $i++)
+				{
+					$str .= $product->forbrand['name']." ".$product->fordevice['name']." ".$product->subtype['name'];
+					$str .= " ".$product->fordevice['name']." ".$product->color['name']." (".$product->box.");";
+					$str .= $product->ean."\r\n";
+				}
+			}
+		}
+
+		return ['succes' => TRUE, 'file' => $str, 'p' => $product_list];
+	}
+
+	public static function wsAdd($verb, $staging = FALSE)
+	{
+		if(!$verb->has('id_customer'))
+		{
+			return ['success' => FALSE, 'error' => 'You must provide id_customer'];
+		}
+
+		$id_customer = $verb->input('id_customer');
+		return self::newROFC($id_customer);		
+	}
+
 
 	/**
 	* Public Method
 	*/
+	//ROFC = Reseller Order For Customer
+	public static function newROFC($id, $staging = FALSE)
+	{
+		$sql = "SELECT O.id_reseller_order 
+				FROM ".self::getProp('table').($staging?"_staging":"")." as O 
+				WHERE O.status = 1 AND O.id_customer = ".$id;
+		$result = DB::select($sql);
+		if(count($result) == 0)
+		{
+			return ['success' => FALSE, 'error' => 'not found with status 1'];
+		}
+
+		$c 						= Customer::find($id);
+		$data['id_customer'] 	= $id;
+		$data['status'] 		= 1;
+		$data['discount'] 		= 0.0;
+		$data['unique_id'] 		= 0;
+		$data['payment_method'] = $c->payment_mode;
+
+		DB::table(self::getProp('table').($staging?"_staging":""))->insertGetId($data);
+		return self::wsForCustomer($id);
+	}
+
 	public static function getTmpCart($order, $staging)
 	{
 		$tmp = [];
@@ -323,8 +387,8 @@ class Order extends Model {
 
 		foreach($result as $c)
 		{
-			$cart['format_one'] = [$c->id_product => $c->quantity];
-			$cart['format_two']	= ['produit' => $c->id_product, 'qty' => $c->quantity];
+			$cart['format_one'][] = [$c->id_product => $c->quantity];
+			$cart['format_two'][] = ['produit' => $c->id_product, 'qty' => $c->quantity];
 		}
 
 		return $cart;

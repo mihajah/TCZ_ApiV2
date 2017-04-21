@@ -196,4 +196,9 @@ Route::group(['prefix' => 'orders'], function(){
 
 	Route::get('/toShip', ['uses' => 'OrderController@toShip']);
 
+	Route::get('/ean/{id}', ['uses' => 'OrderController@withEan']);
+
+	//post, put
+	Route::post('/', ['uses' => 'OrderController@store']);
+
 });
