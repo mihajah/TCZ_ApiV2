@@ -205,5 +205,7 @@ Route::group(['prefix' => 'orders'], function(){
 
 	Route::post('/submit', ['uses' => 'OrderController@storeCartSubmit']);
 
+	Route::post('/delivery', ['uses' => 'OrderController@storeDelivery']);
 
+	Route::post('/validate', ['uses' => 'OrderController@storeValidate']);
 });

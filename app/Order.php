@@ -225,6 +225,7 @@ class Order extends Model {
 		$data['delivery24'] 	= $verb->input('delivery24');
 		$data['shipping_fee'] 	= $verb->input('shipping_fee');
 		DB::table(self::getProp('table').($staging?"_staging":""))->where('id_reseller_order', '=', $all['id_order'])->update($data);
+
 		$missing = self::submitCart($all['cart'], $all['id_order']);
 		if($missing['totalAdded'] == 0)
 		{
@@ -250,9 +251,117 @@ class Order extends Model {
 		return ['success' => TRUE, 'missing' => $missing];
 	}
 
+	public static function wsAddDelivery($verb, $staging = FALSE)
+	{
+		//
+		if(!$verb->has('id_order'))
+		{
+			return ['success' => FALSE, 'error' => 'You must provide id_order'];
+		}
+
+		$order = $verb->input('id_order');
+		if(!self::find($order))
+		{
+			return ['success' => FALSE, 'error' => 'Order not found'];
+		}
+
+		if(self::find($order)->status != 1)
+		{
+			return ['success' => FALSE, 'error' => 'This request only works with order with status = 1 ( order creation step )'];
+		}	
+
+		if(!$verb->has('shipping_fee') || !$verb->has('delivery24'))
+		{
+			return ['success' => FALSE, 'error' => 'You must provide shipping_fee and delivery24'];
+		}
+
+		$data['shipping_fee'] 	= $verb->input('shipping_fee');
+		$data['delivery24'] 	= $verb->input('delivery24');
+		DB::table(self::getProp('table').($staging?"_staging":""))->where('id_reseller_order', '=', $order)->update($data);
+		return self::wsOne($order);
+	}
+
+	public static function wsAddValidate($verb)
+	{
+		if(!$verb->has('id_order'))
+		{
+			return ['success' => FALSE, 'error' => 'You must provide id_order'];
+		}
+
+		if(!$verb->has('cart'))
+		{
+			return ['success' => FALSE, 'error' => 'You must provide cart'];
+		}
+
+		if(count($verb->input('cart')) == 0)
+		{
+			return ['success' => FALSE, 'error' => 'Cart is empty'];
+		}
+
+		$order 	= $verb->input('id_order');
+		$cart 	= $verb->input('cart');
+
+		if(!self::find($order))
+		{
+			return ['success' => FALSE, 'error' => 'Order not found'];
+		}
+
+		if(self::find($order)->status != 1)
+		{
+			return ['success' => FALSE, 'error' => 'This request only works with order with status = 1 ( order creation step )'];
+		}
+
+		$missing = self::validateCart($cart);
+		
+		if($missing['success'] == FALSE)
+		{
+			unset($missing['success']);
+			return ['success' => FALSE, 'missing' => $missing];
+		}
+
+		unset($missing['success']);
+		return ['success' => TRUE, 'missing' => $missing];
+	}
+
 	/**
 	* Public Method
 	*/
+	public static function validateCart($cart)
+	{
+		if(!is_array($cart))
+		{
+			return ['success' => FALSE, 'error' => 'Cart must be an array'];
+		}
+
+		$missing 			= [];
+		$missing['success'] = TRUE;
+		$totalAdded 		= 0;
+		foreach($cart as $k => $v)
+		{
+			$nAdded = self::validateProductInCart(intval($k), $v);
+			$totalAdded += $nAdded;
+
+			if($nAdded < $v)
+			{
+				$missing[$k] 		= $v - $nAdded;
+				$missing['success'] = FALSE;
+			} 
+		}
+
+		return $missing;
+	}
+
+	public static function validateProductInCart($p, $q)
+	{
+		$availableQty = Stock::get($p, 'available');
+		if($q > $availableQty)
+		{
+			$q = $availableQty;
+		}
+
+		return $q;
+	}
+
 	public static function goToNextStep($id, $staging = FALSE)
 	{
 		$o = self::find($id);

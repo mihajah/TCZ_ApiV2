@@ -62,6 +62,28 @@ class OrderController extends Controller {
 	}
 
 	/**
+	 * Store a newly created resource in storage.
+	 *
+	 * @return Response
+	 */
+	public function storeDelivery(Request $verb)
+	{
+		//
+		return Order::wsAddDelivery($verb);
+	}
+
+	/**
+	 * Store a newly created resource in storage.
+	 *
+	 * @return Response
+	 */
+	public function storeValidate(Request $verb)
+	{
+		//
+		return Order::wsAddValidate($verb);
+	}
+
+	/**
 	 * Display the specified resource.
 	 *
 	 * @param  int  $id
