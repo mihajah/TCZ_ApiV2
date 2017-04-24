@@ -3,8 +3,10 @@
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\ModelGetProperties;
 use DB;
+use Mail;
 use App\Customer;
 use App\Product;
+use App\Stock;
 
 class Order extends Model {
 
@@ -127,10 +129,233 @@ class Order extends Model {
 		return self::newROFC($id_customer);		
 	}
 
+	public static function wsAddCart($verb, $staging = FALSE)
+	{
+		$all 		= $verb->all();
+		$fail 		= FALSE;
+		$fillable 	= 	[
+							'id_order', 
+							'id_product', 
+							'quantity'
+						];
+
+		foreach($fillable as $key)
+		{
+			if(!$verb->has($key))
+			{
+				$fail = TRUE;
+			}
+		}
+
+		if($fail)
+		{
+			return ['success' => FALSE, 'error' => 'Those field must be provided', 'field' => $fillable];
+		}
+
+		if($all['quantity'] < 0)
+		{
+			return ['success' => FALSE, 'error' => 'Quantity must > 0'];
+		}
+
+		if(!self::find($all['id_order']))
+		{
+			return ['success' => FALSE, 'error' => 'Order not found'];
+		}
+
+		if(self::find($all['id_order'])->status != 1)
+		{
+			return ['success' => FALSE, 'error' => 'This request only works with order with status = 1 ( order creation step )'];
+		}
+
+		$missing = self::addToCart($all['id_order'], $all['id_product'], $all['quantity']);
+		DB::table(self::getProp('table').($staging?"_staging":""))
+		->where('id_reseller_order', '=', $all['id_order'])
+		->update(['lastupdate_date' => @date('Y-m-d H:i:s')]);
+
+		if($missing)
+		{
+			if($missing == $all['quantity'])
+			{
+				return ['success' => FALSE, 'error' => '0 product available'];
+			}
+		}
+
+		return ['success' => TRUE, 'missing' => $missing];
+	}
+
+	public static function wsAddCartSubmit($verb, $staging = FALSE)
+	{
+		//
+		$all 		= $verb->all();
+		$fail 		= FALSE;
+		$fillable 	= 	[
+							'id_order',
+							'cart'
+						];
+
+		foreach($fillable as $key)
+		{
+			if(!$verb->has($key))
+			{
+				$fail = TRUE;
+			}
+		}
+
+		if($fail)
+		{
+			return ['success' => FALSE, 'error' => 'Those field must be provided', 'field' => $fillable];
+		}
+
+		if(count($all['cart']) == 0)
+		{
+			return ['success' => FALSE, 'error' => 'Cart is empty'];
+		}
+
+		if(!self::find($all['id_order']))
+		{
+			return ['success' => FALSE, 'error' => 'Order not found'];
+		}
+
+		if(self::find($all['id_order'])->status != 1)
+		{
+			return ['success' => FALSE, 'error' => 'This request only works with order with status = 1 ( order creation step )'];
+		}
+
+		//set delivery24, and shipping_fee
+		$data['delivery24'] 	= $verb->input('delivery24');
+		$data['shipping_fee'] 	= $verb->input('shipping_fee');
+		DB::table(self::getProp('table').($staging?"_staging":""))->where('id_reseller_order', '=', $all['id_order'])->update($data);
+		$missing = self::submitCart($all['cart'], $all['id_order']);
+		if($missing['totalAdded'] == 0)
+		{
+			return ['success' => FALSE, 'error' => 'no product available'];
+		}
+
+		self::goToNextStep($all['id_order']);
+		unset($missing['totalAdded']);
+
+		//notif
+			$content['subject'] 	= "Nouvelle commande module revendeurs STAGING (".$all['id_order'].")";
+			$content['content'] 	= "Une commande vient d'être passée. Le numéro de commande est <b>".$all['id_order']."</b>";
+
+			Mail::send(['html' => 'emails.orderSubmit'], ['mail_content' => $content], function($message) use ($content)
+			{
+				$message->from('info-techtablet@techtablet.fr', 'Techtablet');
+			    //$message->to('xanaviarta@gmail.com', 'Mihaja')->subject($content['subject']); //debug
+			    $message->to('steve.queroub@gmail.com', 'Steve')->subject($content['subject']);
+			    $message->to('anne-sophie@techtablet.fr', 'Sophie')->subject($content['subject']);		    
+			});
+		//--
+
+		return ['success' => TRUE, 'missing' => $missing];
+	}
 
 	/**
 	* Public Method
 	*/
+	public static function goToNextStep($id, $staging = FALSE)
+	{
+		$o = self::find($id);
+		if($o->status < 4)
+		{
+			$o->status++;
+			$data['status'] = $o->status;
+			DB::table(self::getProp('table').($staging?"_staging":""))->where('id_reseller_order', '=', $id)->update($data);
+
+			if($o->status == 2 || ($o->status == 3 && $o->billing_number == 0))
+			{
+				self::orderAssignId($id);
+			}
+		}
+	}
+
+	public static function orderAssignId($id, $staging = FALSE)
+	{
+		$order = DB::table(self::getProp('table').($staging?"_staging":""))->where('id_reseller_order', '=', $id)->first();
+		if(count($order))
+		{
+			if($order->unique_id == 0)
+			{
+				$n = DB::table(self::getProp('table').($staging?"_staging":""))->where('id_reseller_order', '=', $id)->where('status', '>', 1)->count();
+				$nRef = $n + 9;
+
+				$data['unique_id'] 		= $nRef;
+				$data['billing_date'] 	= @date('Y-m-d H:i:s');
+				DB::table(self::getProp('table').($staging?"_staging":""))->where('id_reseller_order', '=', $id)
+				->where('id_reseller_order', '=', $id)
+				->update($data);
+			}
+		}
+	}
+
+	public static function resetCart($id, $staging = FALSE)
+	{
+		$oldCart = [];
+		$result = DB::table(self::getProp('order_apb_table').($staging?"_staging":""))->where('id_reseller_order', '=', $id)->get();
+		if(count($result) == 0)
+		{
+			return $oldCart;
+		}	
+
+		foreach($result as $one)
+		{
+			$product = $one->id_product;
+			if(!$staging)
+			{
+				$qty 				= $one->quantity;
+				$oldCart[$product] 	= $qty;
+				$oldQty 			= Stock::get($product, 'available');
+				$newQty 			= $oldQty + $qty;
+
+				Stock::set($product, $newQty);
+			}
+		}
+
+		DB::table(self::getProp('order_apb_table').($staging?"_staging":""))->where('id_reseller_order', '=', $id)->delete();
+	}
+
+	//$cart = ['id_product' => 'quantity'];
+	public static function submitCart($cart, $id)
+	{
+		self::resetCart($id);
+		$totalAdded = 0;
+		$missing 	= [];
+		foreach($cart as $k => $v)
+		{
+			$added = self::addToCart($id, intval($k), $v);
+			$totalAdded += $added;
+			if($added < $v)
+			{
+				$missing[$k] = $v - $added;
+			}
+		}
+
+		$missing['totalAdded'] = $totalAdded;
+		return $missing;
+	}
+
+	public static function addToCart($order, $product, $qty, $staging =  FALSE)
+	{
+		$available = Stock::get($product, 'available');
+		if($qty > $available)
+		{
+			$qty = $available;
+		}
+
+		if(!$staging)
+		{
+			$new = $available - $qty;
+			Stock::set($product, $new);
+		}
+
+		$data['id_reseller_order'] 	= $order;
+		$data['id_product'] 		= $product;
+		$data['quantity']			= $qty;
+
+		DB::table(self::getProp('order_apb_table').($staging?"_staging":""))->insert($data);
+		return $qty;
+	}
+
 	//ROFC = Reseller Order For Customer
 	public static function newROFC($id, $staging = FALSE)
 	{
@@ -143,6 +368,11 @@ class Order extends Model {
 			return ['success' => FALSE, 'error' => 'not found with status 1'];
 		}
 
+		if(!Customer::find($id))
+		{
+			return ['success' => FALSE, 'error' => 'Customer: '.$id.' not found'];
+		}
+
 		$c 						= Customer::find($id);
 		$data['id_customer'] 	= $id;
 		$data['status'] 		= 1;
@@ -150,8 +380,8 @@ class Order extends Model {
 		$data['unique_id'] 		= 0;
 		$data['payment_method'] = $c->payment_mode;
 
-		DB::table(self::getProp('table').($staging?"_staging":""))->insertGetId($data);
-		return self::wsForCustomer($id);
+		$last = DB::table(self::getProp('table').($staging?"_staging":""))->insertGetId($data);
+		return self::wsOne($last);
 	}
 
 	public static function getTmpCart($order, $staging)

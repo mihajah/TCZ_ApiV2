@@ -40,6 +40,28 @@ class OrderController extends Controller {
 	}
 
 	/**
+	 * Store a newly created resource in storage.
+	 *
+	 * @return Response
+	 */
+	public function storeCart(Request $verb)
+	{
+		//
+		return Order::wsAddCart($verb);
+	}
+
+	/**
+	 * Store a newly created resource in storage.
+	 *
+	 * @return Response
+	 */
+	public function storeCartSubmit(Request $verb)
+	{
+		//
+		return Order::wsAddCartSubmit($verb);
+	}
+
+	/**
 	 * Display the specified resource.
 	 *
 	 * @param  int  $id
