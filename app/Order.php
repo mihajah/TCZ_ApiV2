@@ -371,7 +371,7 @@ class Order extends Model {
 			   // $message->to('xanaviarta@gmail.com', 'Mihaja')->subject($content['subject'])
 			   // ->setBody(GF::mailShipping($content['name'], $content['reference'], $content['lien'], $content['num_suivi']), 'text/html'); //debug
 			    $message->to($content['mail'], $content['name'])->subject($content['subject'])
-			    ->setBody(GF::mailShipping($content['name'], $content['reference'], $content['lien'], $content['num_suivi']), 'text/html');		    
+			    ->setBody(GF::mailShippingHtmlBody($content['name'], $content['reference'], $content['lien'], $content['num_suivi']), 'text/html');		    
 			});
 		//---
 

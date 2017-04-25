@@ -417,7 +417,7 @@ class GazFactory
 		
 	}
 
-	public static function mailShipping($nom, $numcommande, $lien = "", $numsuivis = "")
+	public static function mailShippingHtmlBody($nom, $numcommande, $lien = "", $numsuivis = "")
 	{
 		$str2="<div id='container' style='width:610px;margin:auto;text-align:center;'>";
 		$str2.="<div style='border-bottom:1px solid #cccccc;padding-bottom:10px;'><img src='http://www.techtablet.fr/ordermodule/LOGOfactures.png' />";
