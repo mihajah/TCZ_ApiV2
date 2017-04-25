@@ -95,6 +95,28 @@ class OrderController extends Controller {
 	}
 
 	/**
+	 * Store a newly created resource in storage.
+	 *
+	 * @return Response
+	 */
+	public function storePaid(Request $verb)
+	{
+		//
+		return Order::wsAddPaid($verb);
+	}
+
+	/**
+	 * Store a newly created resource in storage.
+	 *
+	 * @return Response
+	 */
+	public function storeRollBack(Request $verb)
+	{
+		//
+		return Order::wsAddRollBack($verb);
+	}
+
+	/**
 	 * Display the specified resource.
 	 *
 	 * @param  int  $id

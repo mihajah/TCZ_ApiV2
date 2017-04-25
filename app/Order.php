@@ -378,6 +378,51 @@ class Order extends Model {
 		return ['success' => TRUE];
 	}
 
+	public static function wsAddPaid($verb)
+	{
+		if(!$verb->has('id_order'))
+		{
+			return ['success' => FALSE, 'error' => 'You must provide id_order'];
+		}
+
+		$order 	= $verb->input('id_order');
+		if(!self::find($order))
+		{
+			return ['success' => FALSE, 'error' => 'Order not found'];
+		}
+
+		if(self::find($order)->status != 3)
+		{
+			return ['success' => FALSE, 'error' => 'This request only works with order with status = 3 ( order sent step )'];
+		}
+
+		self::goToNextStep($order);
+
+		return ['success' => TRUE];
+	}
+
+	public static function wsAddRollBack($verb)
+	{
+		if(!$verb->has('id_order'))
+		{
+			return ['success' => FALSE, 'error' => 'You must provide id_order'];
+		}
+
+		$order 	= $verb->input('id_order');
+		if(!self::find($order))
+		{
+			return ['success' => FALSE, 'error' => 'Order not found'];
+		}
+
+		if(self::find($order)->status != 2)
+		{
+			return ['success' => FALSE, 'error' => 'This request only works with order with status = 2 ( order sent step )'];
+		}
+
+		$oldCart = self::goToPreviousStep($order);
+		return ['success' => TRUE, 'cart' => $oldCart];
+	}
+
 	/**
 	* Public Method
 	*/
@@ -433,6 +478,25 @@ class Order extends Model {
 		}
 	}
 
+	public static function goToPreviousStep($id, $staging = FALSE)
+	{
+		$oldCart = [];
+		$status  = self::find($id)->status;
+		if($status == 2)
+		{
+			$oldCart = self::resetCart($id, $staging);
+		}	
+
+		if($status > 1)
+		{
+			$status--;
+			$data['status'] = $status;
+			DB::table(self::getProp('table').($staging?"_staging":""))->where('id_reseller_order', '=', $id)->update($data);
+		}
+
+		return $oldCart;
+	}
+
 	public static function orderAssignId($id, $staging = FALSE)
 	{
 		$order = DB::table(self::getProp('table').($staging?"_staging":""))->where('id_reseller_order', '=', $id)->first();
@@ -476,6 +540,7 @@ class Order extends Model {
 		}
 
 		DB::table(self::getProp('order_apb_table').($staging?"_staging":""))->where('id_reseller_order', '=', $id)->delete();
+		return $oldCart;
 	}
 
 	//$cart = ['id_product' => 'quantity'];
