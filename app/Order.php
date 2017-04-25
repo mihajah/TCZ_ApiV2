@@ -7,6 +7,7 @@ use Mail;
 use App\Customer;
 use App\Product;
 use App\Stock;
+use App\Helpers\GazFactory as GF;
 
 class Order extends Model {
 
@@ -321,6 +322,60 @@ class Order extends Model {
 
 		unset($missing['success']);
 		return ['success' => TRUE, 'missing' => $missing];
+	}
+
+	public static function wsAddShipped($verb, $staging = FALSE)
+	{
+		//
+		if(!$verb->has('id_order'))
+		{
+			return ['success' => FALSE, 'error' => 'You must provide id_order'];
+		}
+
+		$order 	= $verb->input('id_order');
+		if(!self::find($order))
+		{
+			return ['success' => FALSE, 'error' => 'Order not found'];
+		}
+
+		if(self::find($order)->status != 2)
+		{
+			return ['success' => FALSE, 'error' => 'This request only works with order with status = 2 ( order preparation step )'];
+		}	
+
+		if(!$verb->has('discount'))
+		{
+			return ['success' => FALSE, 'error' => 'You must provide discount'];
+		}
+
+		$discount = floatval($verb->input('discount'));
+		if($discount > 0.0)
+		{
+			$data['discount'] = $discount;
+			DB::table(self::getProp('table').($staging?"_staging":""))->where('id_reseller_order', '=', $order)->update($data);
+		}
+
+		self::goToNextStep($order);
+		//notif
+			$content['subject'] 	= "Commande Techtablet ".$order." expédiée";
+			$customer 				= Customer::find(self::find($order)->id_customer);
+			$content['name']		= $customer->firstname." ".$customer->lastname;
+			$content['mail']		= $customer->email;
+			$content['reference']	= $order;
+			$content['lien']		= 'http://www.techtablet.fr/ordermodule/Customer.html?key='.$customer->key;
+			$content['num_suivi']	= '';
+
+			Mail::send([], [], function($message) use ($content)
+			{
+				$message->from('info-techtablet@techtablet.fr', 'Techtablet');
+			   // $message->to('xanaviarta@gmail.com', 'Mihaja')->subject($content['subject'])
+			   // ->setBody(GF::mailShipping($content['name'], $content['reference'], $content['lien'], $content['num_suivi']), 'text/html'); //debug
+			    $message->to($content['mail'], $content['name'])->subject($content['subject'])
+			    ->setBody(GF::mailShipping($content['name'], $content['reference'], $content['lien'], $content['num_suivi']), 'text/html');		    
+			});
+		//---
+
+		return ['success' => TRUE];
 	}
 
 	/**

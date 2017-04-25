@@ -208,4 +208,6 @@ Route::group(['prefix' => 'orders'], function(){
 	Route::post('/delivery', ['uses' => 'OrderController@storeDelivery']);
 
 	Route::post('/validate', ['uses' => 'OrderController@storeValidate']);
+
+	Route::post('/shipped', ['uses' => 'OrderController@storeShipped']);
 });

@@ -416,5 +416,35 @@ class GazFactory
 		}
 		
 	}
+
+	public static function mailShipping($nom, $numcommande, $lien = "", $numsuivis = "")
+	{
+		$str2="<div id='container' style='width:610px;margin:auto;text-align:center;'>";
+		$str2.="<div style='border-bottom:1px solid #cccccc;padding-bottom:10px;'><img src='http://www.techtablet.fr/ordermodule/LOGOfactures.png' />";
+		$str2.="</div>";
+		$str2.="<div style='padding-top:10px;color:#555454;font-family: Arial;text-align:left;font-size: 17px;'>";
+		$str2.="		<div style='padding-bottom: 20px;margin-top: 10px;'>";
+		$str2.="		<span style='font-size:20px;'> Bonjour ".$nom.", </span><br/>";
+		$str2.="		VOTRE COMMANDE A ÉTÉ EXPÉDIÉE";
+		$str2.="		</div>";
+		$str2.="		<div style='border-top:1px solid #cccccc;padding-top: 10px;'>";
+		$str2.="			Votre commande ayant la référence <span style='font-weight: 800;color:#333333;'>".$numcommande." </span> vient d'être expédiée. <br/>";
+		$str2.="		<p>";
+		if ($numsuivis != "") {
+			$str2.="				Votre numéro de suivi est : <span style='font-weight: 800;'>".$numsuivis."</span> <br/>";
+			$str2.="		Pour suivre l'avancement de votre livraison, vous pouvez saisir ce numéro à l'adresse suivante :  <br/>";
+			$str2.="				<a href='http://www.csuivi.courrier.laposte.fr/suivi/index?id=".$numsuivis."'>http://www.csuivi.courrier.laposte.fr/suivi/index?id='".$numsuivis."'</a> <br/>";	
+		}
+		if ($lien != "") {
+			$str2.="			Votre facture est disponible en téléchargement <a href='".$lien."'> sur la page de votre commande</a>";
+		} 
+		$str2.="		</p>";
+		$str2.="		<p>Merci d'avoir effectué vos achats chez TechTablet</p>";
+		$str2.="		</div>";
+		$str2.="</div>";
+		$str2.="</div>";
+		
+		return $str2;
+	}
 }
 ?>
