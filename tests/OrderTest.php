@@ -22,9 +22,9 @@ class OrderTest extends TestCase{
 		{
 			$route = [
 						'orders',
-						'orders/2703',
+						'orders/2679',
 						'orders/customer/27',
-						'orders/cart/2703',
+						'orders/cart/2679',
 						'orders/toShip',
 						'orders/ean/2694'
 			     	 ];
