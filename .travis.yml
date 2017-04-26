@@ -4,7 +4,7 @@ php:
   - hhvm
   #- nightly
 script:
-  - phpunit
+  - phpunit --debug
 services:
   - mysql
 before_install:
