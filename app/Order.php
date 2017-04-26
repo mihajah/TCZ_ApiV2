@@ -415,7 +415,7 @@ class Order extends Model {
 		return ['success' => TRUE];
 	}
 
-	public static function wsAddPaid($verb)
+	public static function wsAddPaid($verb, $staging = FALSE)
 	{
 		if(!$verb->has('id_order'))
 		{
