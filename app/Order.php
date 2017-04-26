@@ -127,7 +127,13 @@ class Order extends Model {
 		}
 
 		$id_customer = $verb->input('id_customer');
-		return self::newROFC($id_customer);		
+		$fresh = self::newROFC($id_customer);	
+		if($verb->has('unit_test'))
+		{
+			self::destroy($fresh['id']);
+		}	
+
+		return $fresh;
 	}
 
 	public static function wsAddCart($verb, $staging = FALSE)
@@ -237,17 +243,24 @@ class Order extends Model {
 		unset($missing['totalAdded']);
 
 		//notif
-			$content['subject'] 	= "Nouvelle commande module revendeurs STAGING (".$all['id_order'].")";
+			$content['subject'] 	= "Nouvelle commande module revendeurs (".$all['id_order'].")";
 			$content['content'] 	= "Une commande vient d'être passée. Le numéro de commande est <b>".$all['id_order']."</b>";
 
-			Mail::send(['html' => 'emails.orderSubmit'], ['mail_content' => $content], function($message) use ($content)
+			if(!$verb->has('unit_test'))
 			{
-				$message->from('info-techtablet@techtablet.fr', 'Techtablet');
-			    //$message->to('xanaviarta@gmail.com', 'Mihaja')->subject($content['subject']); //debug
-			    $message->to('steve.queroub@gmail.com', 'Steve')->subject($content['subject']);
-			    $message->to('anne-sophie@techtablet.fr', 'Sophie')->subject($content['subject']);		    
-			});
+				Mail::send(['html' => 'emails.orderSubmit'], ['mail_content' => $content], function($message) use ($content)
+				{
+					$message->from('info-techtablet@techtablet.fr', 'Techtablet');
+				    //$message->to('xanaviarta@gmail.com', 'Mihaja')->subject($content['subject']); //debug
+				    $message->to('steve.queroub@gmail.com', 'Steve')->subject($content['subject']);
+				    $message->to('anne-sophie@techtablet.fr', 'Sophie')->subject($content['subject']);		    
+				});
+			}			
 		//--
+
+		if($verb->has('unit_test'))
+			self::wsAddRollBack($verb);
+
 
 		return ['success' => TRUE, 'missing' => $missing];
 	}
@@ -278,7 +291,19 @@ class Order extends Model {
 
 		$data['shipping_fee'] 	= $verb->input('shipping_fee');
 		$data['delivery24'] 	= $verb->input('delivery24');
-		DB::table(self::getProp('table').($staging?"_staging":""))->where('id_reseller_order', '=', $order)->update($data);
+
+		if($verb->has('unit_test'))
+		{
+			if(!self::find($order))
+			{
+				return ['success' => FALSE, 'error' => 'Order not found'];
+			}
+		}
+		else
+		{
+			DB::table(self::getProp('table').($staging?"_staging":""))->where('id_reseller_order', '=', $order)->update($data);
+		}
+
 		return self::wsOne($order);
 	}
 
@@ -365,15 +390,27 @@ class Order extends Model {
 			$content['lien']		= 'http://www.techtablet.fr/ordermodule/Customer.html?key='.$customer->key;
 			$content['num_suivi']	= '';
 
-			Mail::send([], [], function($message) use ($content)
+			if(!$verb->has('unit_test'))
 			{
-				$message->from('info-techtablet@techtablet.fr', 'Techtablet');
-			   // $message->to('xanaviarta@gmail.com', 'Mihaja')->subject($content['subject'])
-			   // ->setBody(GF::mailShipping($content['name'], $content['reference'], $content['lien'], $content['num_suivi']), 'text/html'); //debug
-			    $message->to($content['mail'], $content['name'])->subject($content['subject'])
-			    ->setBody(GF::mailShippingHtmlBody($content['name'], $content['reference'], $content['lien'], $content['num_suivi']), 'text/html');		    
-			});
+				Mail::send([], [], function($message) use ($content)
+				{
+					$message->from('info-techtablet@techtablet.fr', 'Techtablet');
+				   // $message->to('xanaviarta@gmail.com', 'Mihaja')->subject($content['subject'])
+				   // ->setBody(GF::mailShipping($content['name'], $content['reference'], $content['lien'], $content['num_suivi']), 'text/html'); //debug
+				    $message->to($content['mail'], $content['name'])->subject($content['subject'])
+				    ->setBody(GF::mailShippingHtmlBody($content['name'], $content['reference'], $content['lien'], $content['num_suivi']), 'text/html');		    
+				});
+			}
+			
 		//---
+
+		if($verb->has('unit_test'))
+		{
+			$o = self::find($order);
+			$o->status--;
+			$data['status'] = $o->status;
+			DB::table(self::getProp('table').($staging?"_staging":""))->where('id_reseller_order', '=', $order)->update($data);
+		}
 
 		return ['success' => TRUE];
 	}
@@ -397,6 +434,14 @@ class Order extends Model {
 		}
 
 		self::goToNextStep($order);
+
+		if($verb->has('unit_test'))
+		{
+			$o = self::find($order);
+			$o->status--;
+			$data['status'] = $o->status;
+			DB::table(self::getProp('table').($staging?"_staging":""))->where('id_reseller_order', '=', $order)->update($data);
+		}
 
 		return ['success' => TRUE];
 	}
@@ -504,7 +549,7 @@ class Order extends Model {
 		{
 			if($order->unique_id == 0)
 			{
-				$n = DB::table(self::getProp('table').($staging?"_staging":""))->where('id_reseller_order', '=', $id)->where('status', '>', 1)->count();
+				$n = DB::table(self::getProp('table').($staging?"_staging":""))->where('status', '>', 1)->count();
 				$nRef = $n + 9;
 
 				$data['unique_id'] 		= $nRef;
