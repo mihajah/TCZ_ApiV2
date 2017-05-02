@@ -400,8 +400,7 @@ class Order extends Model {
 				    $message->to($content['mail'], $content['name'])->subject($content['subject'])
 				    ->setBody(GF::mailShippingHtmlBody($content['name'], $content['reference'], $content['lien'], $content['num_suivi']), 'text/html');		    
 				});
-			}
-			
+			}			
 		//---
 
 		if($verb->has('unit_test'))
@@ -715,6 +714,11 @@ class Order extends Model {
 		return $result;
 	}
 
+	/**
+	* obsolete fx
+	* need to update '->where($po.'.current_state', '<', 4)'
+	* better use Stock::get($product, 'real') instead
+	*/
 	public static function getCurrentStock($id_product)
 	{
 		$ro   = self::getProp('table');

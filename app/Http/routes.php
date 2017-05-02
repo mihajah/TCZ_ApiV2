@@ -215,3 +215,42 @@ Route::group(['prefix' => 'orders'], function(){
 
 	Route::post('/rollback', ['uses' => 'OrderController@storeRollBack']);
 });
+
+/**
+* Suppliers route
+*/
+Route::group(['prefix' => 'suppliers'], function(){
+
+	//get
+	Route::get('/{id}', ['uses' => 'SupplierController@oneSupplier'])
+	->where('id', '[0-9]+');
+
+	Route::get('/', ['uses' => 'SupplierController@allSupplier']);
+
+	Route::get('/shippingorders', ['uses' => 'SupplierController@showShippingOrders']);
+
+	Route::get('/ordercontent/{id}', ['uses' => 'SupplierController@showOrderContent'])
+	->where('id', '[0-9]+');
+
+	//put
+	Route::put('/orders', ['uses' => 'SupplierController@updateOrderContent']);
+
+	Route::put('/ordercontent', ['uses' => 'SupplierController@updateOrderContentForCheckin']);
+});
+
+/**
+* Stock route
+*/
+Route::group(['prefix' => 'stocks'], function(){
+
+	//get
+	Route::get('/{id}', ['uses' => 'StockController@oneStock'])
+	->where('id', '[0-9]+');
+
+	Route::get('/tracker', ['uses' => 'StockController@tracker']);
+
+	//post, put
+	Route::put('/', ['uses' => 'StockController@update']);
+
+	Route::put('/inventory', ['uses' => 'StockController@inventory']);
+});

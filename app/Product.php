@@ -111,7 +111,7 @@ class Product extends Model {
 	public static function wsAmazone($id)
 	{
 		$data = [];
-		$full = self::remapProductAttributes($id);
+		
 		$field = [
 					'id',
 					'id_product',
@@ -151,11 +151,8 @@ class Product extends Model {
 					'ppic2',
 					'feature'
 				];
-		
-		foreach($field as $key)
-		{
-			$data[$key] = $full->$key;
-		}
+
+		$data = self::remapProductAttributes($id, $field, 'arr');
 
 		return $data;
 	}
@@ -171,10 +168,10 @@ class Product extends Model {
 	/**
 	* Public method
 	*/
-
-	public static function getFullSchema($id, $display = 'both') //key, value, both
+	//todo override second parameter to show real full schema
+	public static function getFullSchema($id, $field = [], $display = 'both') //key, value, both
 	{
-		$full = self::remapProductAttributes($id, 'arr');
+		$full = self::remapProductAttributes($id, $field, 'arr');
 
 		if($display == 'both')
 		{
@@ -403,88 +400,266 @@ class Product extends Model {
 	* Internal method
 	*/
 
-	protected static function remapProductAttributes($id, $vmode = 'obj')
+	protected static function remapProductAttributes($id, $display = [], $vmode = 'obj')
 	{
+		if(empty($display))
+		{
+			$display = [
+							'id',
+							'name',
+							'fordevice',
+							'forbrand',
+							'type',
+							'subtype',
+							'ean',
+							'pricettc',
+							'price_reseller',
+							'pictures',
+							'quantity',
+							'box',
+							'color',
+							'collection',
+							'weight',
+							'url',
+							'cover',
+							'reseller_description',
+							'stock'
+					   ];
+		}
+
 		$data['id'] 				= $id;
 		$data['id_product'] 		= $id;
-		$data['name'] 				= PS::product($id, 'PTL.name');
-		$data['description'] 		= PS::product($id, 'PTL.description');
-		$data['reference'] 			= PS::product($id, 'PT.reference');
-		$data['ean'] 				= PS::product($id, 'PT.ean13');
-		$data['type'] 				= self::linkTypeFull($id);
-		$data['subtype'] 			= PB::product(self::find($id)->id_subtype, 'subtype');
-		$data['url'] 				= str_replace('PRODUCT_ID', $id, Config::get('constants.PROD_BASE_URL').self::$url);
-		$data['material'] 			= self::linkMaterial($id);
-		$data['color'] 				= PB::product($id, 'color');
-		$data['pattern'] 			= self::linkPattern($id);
-		$data['active'] 			= (PS::product($id, 'PT.active')) ? ['value' => 1, 'display' => 'yes'] : ['value' => 0, 'display' => 'none'];
-		$data['obsolete'] 			= (self::find($id)->is_obsolete)  ? ['value' => 1, 'display' => 'yes'] : ['value' => 0, 'display' => 'no'];
-		$data['check'] 				= (self::find($id)->is_check) 	  ? ['value' => 1, 'display' => 'yes'] : ['value' => 0, 'display' => 'no'];
-		$data['fordevice'] 			= PB::product($id, 'fordevice');
-		$data['picture1'] 			= self::getPicture($id, 'picture1', ['len' => 7, 'key' => 'picture']);
-		$data['picture2'] 			= self::getPicture($id, 'picture2', ['len' => 7, 'key' => 'picture']);
-		$data['picture3'] 			= self::getPicture($id, 'picture3', ['len' => 7, 'key' => 'picture']);
-		$data['picture4'] 			= self::getPicture($id, 'picture4', ['len' => 7, 'key' => 'picture']);
-		$data['picture5'] 			= self::getPicture($id, 'picture5', ['len' => 7, 'key' => 'picture']);
-		$data['picture6'] 			= self::getPicture($id, 'picture6', ['len' => 7, 'key' => 'picture']);
-		$data['picture7'] 			= self::getPicture($id, 'picture7', ['len' => 7, 'key' => 'picture']);
-		$data['picture8'] 			= self::getPicture($id, 'picture8', ['len' => 7, 'key' => 'picture']);
-		$data['picture9'] 			= self::getPicture($id, 'picture9', ['len' => 7, 'key' => 'picture']);
-		$data['spicture1']			= self::linkPictureStatus($id, 'spicture1');
-		$data['spicture2']			= self::linkPictureStatus($id, 'spicture2');
-		$data['spicture3']			= self::linkPictureStatus($id, 'spicture3');
-		$data['spicture4']			= self::linkPictureStatus($id, 'spicture4');
-		$data['spicture5']			= self::linkPictureStatus($id, 'spicture5');
-		$data['spicture6']			= self::linkPictureStatus($id, 'spicture6');
-		$data['spicture7']			= self::linkPictureStatus($id, 'spicture7');
-		$data['spicture8']			= self::linkPictureStatus($id, 'spicture8');
-		$data['spicture9']			= self::linkPictureStatus($id, 'spicture9');
-		$data['tag'] 				= PB::product($id, 'tag');
-		$data['brand'] 				= self::linkBrand($id);
-		$data['fordevicewith'] 		= PB::product($id, 'fordevicewith');
-		$data['commentpicture'] 	= (self::find($id)->commentpicture) ? ['value' => 1, 'display' => self::find($id)->commentpicture] : ['value' => '', 'display' => ''];
+
+
+		if(in_array('name', $display))
+			$data['name'] 				= PS::product($id, 'PTL.name');
+
+		if(in_array('description', $display))
+			$data['description'] 		= PS::product($id, 'PTL.description');
+
+		if(in_array('reference', $display))
+			$data['reference'] 			= PS::product($id, 'PT.reference');
+
+		if(in_array('ean', $display))
+			$data['ean'] 				= PS::product($id, 'PT.ean13');
+
+		if(in_array('type', $display))
+			$data['type'] 				= self::linkTypeFull($id);
+
+		if(in_array('subtype', $display))
+			$data['subtype'] 			= PB::product(self::find($id)->id_subtype, 'subtype');
+
+		if(in_array('url', $display))
+			$data['url'] 				= str_replace('PRODUCT_ID', $id, Config::get('constants.PROD_BASE_URL').self::$url);
+
+		if(in_array('material', $display))
+			$data['material'] 			= self::linkMaterial($id);
+
+		if(in_array('color', $display))
+			$data['color'] 				= PB::product($id, 'color');
+
+		if(in_array('pattern', $display))
+			$data['pattern'] 			= self::linkPattern($id);
+
+		if(in_array('active', $display))
+			$data['active'] 			= (PS::product($id, 'PT.active')) ? ['value' => 1, 'display' => 'yes'] : ['value' => 0, 'display' => 'none'];
+
+		if(in_array('obsolete', $display))
+			$data['obsolete'] 			= (self::find($id)->is_obsolete)  ? ['value' => 1, 'display' => 'yes'] : ['value' => 0, 'display' => 'no'];
+		
+		if(in_array('check', $display))
+			$data['check'] 				= (self::find($id)->is_check) 	  ? ['value' => 1, 'display' => 'yes'] : ['value' => 0, 'display' => 'no'];
+
+		if(in_array('fordevice', $display))
+			$data['fordevice'] 			= PB::product($id, 'fordevice');
+
+		if(in_array('picture1', $display))
+			$data['picture1'] 			= self::getPicture($id, 'picture1', ['len' => 7, 'key' => 'picture']);
+
+		if(in_array('picture2', $display))
+			$data['picture2'] 			= self::getPicture($id, 'picture2', ['len' => 7, 'key' => 'picture']);
+
+		if(in_array('picture3', $display))
+			$data['picture3'] 			= self::getPicture($id, 'picture3', ['len' => 7, 'key' => 'picture']);
+
+		if(in_array('picture4', $display))
+			$data['picture4'] 			= self::getPicture($id, 'picture4', ['len' => 7, 'key' => 'picture']);
+
+		if(in_array('picture5', $display))
+			$data['picture5'] 			= self::getPicture($id, 'picture5', ['len' => 7, 'key' => 'picture']);
+
+		if(in_array('picture6', $display))
+			$data['picture6'] 			= self::getPicture($id, 'picture6', ['len' => 7, 'key' => 'picture']);
+
+		if(in_array('picture7', $display))
+			$data['picture7'] 			= self::getPicture($id, 'picture7', ['len' => 7, 'key' => 'picture']);
+
+		if(in_array('picture8', $display))
+			$data['picture8'] 			= self::getPicture($id, 'picture8', ['len' => 7, 'key' => 'picture']);
+
+		if(in_array('picture9', $display))
+			$data['picture9'] 			= self::getPicture($id, 'picture9', ['len' => 7, 'key' => 'picture']);
+
+		if(in_array('spicture1', $display))
+			$data['spicture1']			= self::linkPictureStatus($id, 'spicture1');
+
+		if(in_array('spicture2', $display))
+			$data['spicture2']			= self::linkPictureStatus($id, 'spicture2');
+
+		if(in_array('spicture3', $display))
+			$data['spicture3']			= self::linkPictureStatus($id, 'spicture3');
+
+		if(in_array('spicture4', $display))
+			$data['spicture4']			= self::linkPictureStatus($id, 'spicture4');
+
+		if(in_array('spicture5', $display))
+			$data['spicture5']			= self::linkPictureStatus($id, 'spicture5');
+
+		if(in_array('spicture6', $display))
+			$data['spicture6']			= self::linkPictureStatus($id, 'spicture6');
+
+		if(in_array('spicture7', $display))
+			$data['spicture7']			= self::linkPictureStatus($id, 'spicture7');
+
+		if(in_array('spicture8', $display))
+			$data['spicture8']			= self::linkPictureStatus($id, 'spicture8');
+
+		if(in_array('spicture9', $display))
+			$data['spicture9']			= self::linkPictureStatus($id, 'spicture9');
+
+		if(in_array('tag', $display))
+			$data['tag'] 				= PB::product($id, 'tag');
+
+		if(in_array('brand', $display))
+			$data['brand'] 				= self::linkBrand($id);
+
+		if(in_array('fordevicewith', $display))
+			$data['fordevicewith'] 		= PB::product($id, 'fordevicewith');
+
+		if(in_array('commentpicture', $display))
+			$data['commentpicture'] 	= (self::find($id)->commentpicture) ? ['value' => 1, 'display' => self::find($id)->commentpicture] : ['value' => '', 'display' => ''];
+		
 		$data['price'] 				= ['value' => PS::product($id, 'PT.price'), 'display' => (((int)(PS::product($id, 'PT.price') * 1.2 * 100000))/100000)];
-		$data['pricettc'] 			= number_format(floatval($data['price']['value'])*1.2, 2); 
-		$data['quantity'] 			= Stock::get($id, 'available');
-		$data['date'] 				= PS::product($id, 'PT.date_add');
-		$data['width'] 				= ['value' => PS::product($id, 'PT.width'),  'display' => PS::product($id, 'PT.width')];
-		$data['height'] 			= ['value' => PS::product($id, 'PT.height'), 'display' => PS::product($id, 'PT.height')];
-		$data['weight'] 			= ['value' => PS::product($id, 'PT.weight'), 'display' => PS::product($id, 'PT.weight')];
-		$data['depth'] 				= ['value' => PS::product($id, 'PT.depth'),  'display' => PS::product($id, 'PT.depth')];
-		$data['numbox'] 			= (self::find($id)->numbox) ? ['value' => self::find($id)->numbox, 'display' => self::find($id)->numbox, 'quantity' => Stock::fromBox(self::find($id)->numbox)] : ['value' => '', 'display' => '', 'quantity' => 0];
-		$data['suppliername'] 		= (self::find($id)->suppliername) ? ['value' => self::find($id)->suppliername, 'display' => self::find($id)->suppliername] : ['value' => '', 'display' => ''];
-		$data['ppic1'] 				= self::getPicture($id, 'ppic1', ['len' => 4, 'key' => 'ppic']);
-		$data['ppic2'] 				= self::getPicture($id, 'ppic2', ['len' => 4, 'key' => 'ppic']);
-		$data['externlink'] 		= (self::find($id)->externLink) ? ['value' => self::find($id)->externLink, 'display' => self::find($id)->externLink] : ['value' => '', 'display' => ''];
-		$data['sold'] 				= self::getSold($id);
-		$data['sold_touchiz'] 		= Order::getSold($id, '', ['date' => '', 'side' => 'touchiz']);
-		$data['soldOn30Touchiz'] 	= Order::getSold($id, '', ['date' => date('Y-m-d | H:i:s', strtotime("-1 month")), 'side' => 'touchiz']);
-		$data['soldOn60Touchiz'] 	= Order::getSold($id, '', ['date' => date('Y-m-d | H:i:s', strtotime("-2 month")), 'side' => 'touchiz']);
-		$data['sold_techtablet'] 	= Order::getSold($id, '', ['date' => '', 'side' => 'techtablet']);
-		$data['soldOn30Techtablet']	= Order::getSold($id, '', ['date' => date('Y-m-d | H:i:s', strtotime("-1 month")), 'side' => 'techtablet']);
-		$data['soldOn60Techtablet']	= Order::getSold($id, '', ['date' => date('Y-m-d | H:i:s', strtotime("-2 month")), 'side' => 'techtablet']);
-		$data['soldOnTouchiz']		= GF::getProductSellingDataForYear($id, date('Y'), 'touchiz');
-		$data['soldOnTechtablet']	= GF::getProductSellingDataForYear($id, date('Y'), 'techtablet');		
-		$data['sold30'] 			= self::getSold($id, '30');
-		$data['sold60'] 			= self::getSold($id, '60');
-		$data['wishbuy'] 			= (self::find($id)->wishbuy)  ? ['value' => self::find($id)->wishbuy,  'display' => self::find($id)->wishbuy]  : ['value' => '', 'display' => ''];
-		$data['supplier'] 			= (self::find($id)->supplier) ? ['value' => self::find($id)->supplier, 'display' => self::find($id)->supplier] : ['value' => '', 'display' => ''];
-		$data['feature'] 			= PB::product($id, 'feature');
-		$data['buyingprice'] 		= PB::product($id, 'buyingprice');
-		$data['orderedqtty'] 		= PB::product($id, 'orderedqtty');
-		$data['manufacturer']		= PB::product($id, 'manufacturer');
-		$data['condition']			= self::find($id)->condition;
+		
+		if(in_array('pricettc', $display))
+			$data['pricettc'] 			= number_format(floatval($data['price']['value'])*1.2, 2); 
+
+		if(in_array('quantity', $display))
+			$data['quantity'] 			= Stock::get($id, 'available');
+
+		if(in_array('date', $display))
+			$data['date'] 				= PS::product($id, 'PT.date_add');
+
+		if(in_array('width', $display))
+			$data['width'] 				= ['value' => PS::product($id, 'PT.width'),  'display' => PS::product($id, 'PT.width')];
+
+		if(in_array('height', $display))
+			$data['height'] 			= ['value' => PS::product($id, 'PT.height'), 'display' => PS::product($id, 'PT.height')];
+
+		if(in_array('weight', $display))
+			$data['weight'] 			= ['value' => PS::product($id, 'PT.weight'), 'display' => PS::product($id, 'PT.weight')];
+
+		if(in_array('depth', $display))
+			$data['depth'] 				= ['value' => PS::product($id, 'PT.depth'),  'display' => PS::product($id, 'PT.depth')];
+
+		if(in_array('numbox', $display))
+			$data['numbox'] 			= (self::find($id)->numbox) ? ['value' => self::find($id)->numbox, 'display' => self::find($id)->numbox, 'quantity' => Stock::fromBox(self::find($id)->numbox)] : ['value' => '', 'display' => '', 'quantity' => 0];
+		
+		if(in_array('suppliername', $display))
+			$data['suppliername'] 		= (self::find($id)->suppliername) ? ['value' => self::find($id)->suppliername, 'display' => self::find($id)->suppliername] : ['value' => '', 'display' => ''];
+		
+		if(in_array('ppic1', $display))
+			$data['ppic1'] 				= self::getPicture($id, 'ppic1', ['len' => 4, 'key' => 'ppic']);
+		
+		if(in_array('ppic2', $display))
+			$data['ppic2'] 				= self::getPicture($id, 'ppic2', ['len' => 4, 'key' => 'ppic']);
+		
+		if(in_array('externlink', $display))
+			$data['externlink'] 		= (self::find($id)->externLink) ? ['value' => self::find($id)->externLink, 'display' => self::find($id)->externLink] : ['value' => '', 'display' => ''];
+		
+		if(in_array('sold', $display))
+			$data['sold'] 				= self::getSold($id);
+
+		if(in_array('sold_touchiz', $display))
+			$data['sold_touchiz'] 		= Order::getSold($id, '', ['date' => '', 'side' => 'touchiz']);
+
+		if(in_array('soldOn30Touchiz', $display))
+			$data['soldOn30Touchiz'] 	= Order::getSold($id, '', ['date' => date('Y-m-d | H:i:s', strtotime("-1 month")), 'side' => 'touchiz']);
+
+		if(in_array('soldOn60Touchiz', $display))
+			$data['soldOn60Touchiz'] 	= Order::getSold($id, '', ['date' => date('Y-m-d | H:i:s', strtotime("-2 month")), 'side' => 'touchiz']);
+		
+		if(in_array('sold_techtablet', $display))
+			$data['sold_techtablet'] 	= Order::getSold($id, '', ['date' => '', 'side' => 'techtablet']);
+
+		if(in_array('soldOn30Techtablet', $display))
+			$data['soldOn30Techtablet']	= Order::getSold($id, '', ['date' => date('Y-m-d | H:i:s', strtotime("-1 month")), 'side' => 'techtablet']);
+
+		if(in_array('soldOn60Techtablet', $display))
+			$data['soldOn60Techtablet']	= Order::getSold($id, '', ['date' => date('Y-m-d | H:i:s', strtotime("-2 month")), 'side' => 'techtablet']);
+
+		if(in_array('soldOnTouchiz', $display))
+			$data['soldOnTouchiz']		= GF::getProductSellingDataForYear($id, date('Y'), 'touchiz');
+
+		if(in_array('soldOnTechtablet', $display))
+			$data['soldOnTechtablet']	= GF::getProductSellingDataForYear($id, date('Y'), 'techtablet');		
+
+		if(in_array('sold30', $display))
+			$data['sold30'] 			= self::getSold($id, '30');
+
+		if(in_array('sold60', $display))
+			$data['sold60'] 			= self::getSold($id, '60');
+
+		if(in_array('wishbuy', $display))
+			$data['wishbuy'] 			= (self::find($id)->wishbuy)  ? ['value' => self::find($id)->wishbuy,  'display' => self::find($id)->wishbuy]  : ['value' => '', 'display' => ''];
+		
+		if(in_array('supplier', $display))
+			$data['supplier'] 			= (self::find($id)->supplier) ? ['value' => self::find($id)->supplier, 'display' => self::find($id)->supplier] : ['value' => '', 'display' => ''];
+		
+		if(in_array('feature', $display))
+			$data['feature'] 			= PB::product($id, 'feature');
+
+		if(in_array('buyingprice', $display))
+			$data['buyingprice'] 		= PB::product($id, 'buyingprice');
+
+		if(in_array('orderedqtty', $display))
+			$data['orderedqtty'] 		= PB::product($id, 'orderedqtty');
+
+		if(in_array('manufacturer', $display))
+			$data['manufacturer']		= PB::product($id, 'manufacturer');
+
+		if(in_array('condition', $display))
+			$data['condition']			= self::find($id)->condition;
+
+
 		//additional field ++
-		$data['reseller_description']	= self::find($id)->reseller_description;
-		$data['stock']					= Stock::get($id);
-		$field_map 						= ['id_collection' => 'id', 'collection_name' => 'name', 'alt_name' => 'alt_name'];
-		$data['collection'] 			= self::find($id)->linkCollection($field_map);
-		$data['box'] 					= self::find($id)->numbox;
-		$price_reseller					= PB::product($id, 'price_reseller');
-		$data['price_reseller'] 		= $price_reseller['value'];
-		$data['forbrand'] 				= PB::product($data['fordevice']['id'], 'forbrand');
-		$data['pictures'] 				= PB::product(['id' => $id, 'type' => 'thumb'], 'cover');
-		$data['cover'] 					= PB::product(['id' => $id, 'type' => 'cover'], 'cover');
+		if(in_array('reseller_description', $display))
+			$data['reseller_description']	= self::find($id)->reseller_description;
+
+		if(in_array('stock', $display))
+			$data['stock']					= Stock::get($id);
+
+
+		$field_map 							= ['id_collection' => 'id', 'collection_name' => 'name', 'alt_name' => 'alt_name'];
+		if(in_array('collection', $display))
+			$data['collection'] 			= self::find($id)->linkCollection($field_map);
+
+		if(in_array('box', $display))
+			$data['box'] 					= self::find($id)->numbox;
+
+
+		$price_reseller						= PB::product($id, 'price_reseller');
+		if(in_array('price_reseller', $display))
+			$data['price_reseller'] 		= $price_reseller['value'];
+
+		if(in_array('forbrand', $display))
+			$data['forbrand'] 				= PB::product($data['fordevice']['id'], 'forbrand');
+
+		if(in_array('pictures', $display))
+			$data['pictures'] 				= PB::product(['id' => $id, 'type' => 'thumb'], 'cover');
+
+		if(in_array('cover', $display))
+			$data['cover'] 					= PB::product(['id' => $id, 'type' => 'cover'], 'cover');
 
 		if($vmode == 'obj')
 			return (object) $data;

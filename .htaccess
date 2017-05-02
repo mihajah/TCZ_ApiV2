@@ -20,3 +20,7 @@
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 </IfModule>
+
+<IfModule mod_php5.c>
+php_value max_execution_time 60
+</IfModule>
