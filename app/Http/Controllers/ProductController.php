@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 use App\Helpers\Prestashop as PS;
+use App\Helpers\History;
 use App\Product;
 use App\Device;
 use Route;
@@ -81,6 +82,19 @@ class ProductController extends Controller {
 	{
 		$data = Product::wsAmazone($id_product);
 		return $data;
+	}
+
+	/**
+	 * Display a listing of the resource.
+	 *
+	 * @return Response
+	 */
+	public function historyLog($id_ean, $from = '', $to = '')
+	{
+		//
+		History::_set_date_filter($from, $to);
+		$id = PS::product($id_ean, 'PT.id_product');//ean -> id conversion
+		return History::getLog($id);
 	}
 
 	/**

@@ -53,7 +53,18 @@ class Stock extends Model {
 		$data['id_product'] 	= $verb->input('id_product');
 		$data['qty_real'] 		= $verb->input('qty_real');
 		$data['reason'] 		= $verb->input('reason');
+
+		if($verb->has('unit_test'))
+		{
+			$data['unit_test']  = 'unit_test';
+		}
+
 		$res 					= self::updateStockTracking($data);
+
+		if(isset($res['success']))
+		{
+			return $res;
+		}
 
 		if($res)
 		{
@@ -96,6 +107,10 @@ class Stock extends Model {
 			$data['qty_real'] 		= $stock_bdd_new;
 			$data['qty_change']  	= $change;
 			$data['reason']  		= 4;
+			if($verb->has('unit_test'))
+			{
+				$data['unit_test']  = 'unit_test';
+			}
 			//--
 
 			$res = self::updateStockTracking($data, TRUE);
@@ -162,8 +177,17 @@ class Stock extends Model {
 		$data['qty_real'] 		= $stock_bdd_new;
 		$data['qty_change']  	= $change_theo;
 		$data['reason']  		= 6;
+		if($verb->has('unit_test'))
+		{
+			$data['unit_test']  = 'unit_test';
+		}
 		//--
-		self::updateStockTracking($data, TRUE); //short update, error: 6
+		$res = self::updateStockTracking($data, TRUE); //short update, error: 6
+
+		if(!$res)
+		{
+			return ['success' => TRUE];
+		}
 
 		$return = ['bdd' => $stock_bdd_new, 'change' => $change, 'theo' => $stock_theo, 'change_theo' => $change_theo];
 		return json_encode(['synchronized' => $return]);
@@ -213,6 +237,7 @@ class Stock extends Model {
 							5 => 'Erreur fournisseur',
 							6 => 'Synchro stock BDD'
 						];
+						
 		$reason 	 =  ['id' => $data['reason'], 'value' => $reason_list[$data['reason']]];
 
 		if($short)
@@ -223,6 +248,12 @@ class Stock extends Model {
 			$value['qty_from'] 		= $data['qty_from'];
 			$value['reason'] 		= json_encode($reason);
 			$value['date_updated'] 	= @date('Y-m-d H:i:s');
+			if(isset($data['unit_test']))
+			{
+				$id = DB::table($table)->insertGetId($value);
+				DB::table($table)->where('id', '=', $id)->delete();
+				return FALSE;
+			}
 
 			return DB::table($table)->insert($value);
 		}
@@ -252,7 +283,13 @@ class Stock extends Model {
 		$value['qty_from'] 		= $stock_old;
 		$value['reason'] 		= json_encode($reason);
 		$value['date_updated'] 	= @date('Y-m-d H:i:s');
-		$res = DB::table($table)->insert($value);
+		$res = DB::table($table)->insertGetId($value);
+
+		if(isset($data['unit_test']))
+		{
+			DB::table($table)->where('id', '=', $res)->delete();
+			return ['success' => $res];
+		}
 
 		if($res)
 		{
@@ -262,10 +299,23 @@ class Stock extends Model {
 		return $res;
 	}
 
-	public static function tracker($product_panel)
+	public static function tracker($product_panel, $unit_test = '')
 	{
 		$table_log 	= 'apb_stock_log';
 		$ins 		= 0;
+
+		if($unit_test == 'unit_test')
+		{
+			$id_product 			= 3630;
+			$stock 					= self::get($id_product, 'available');
+			$data['id_product'] 	= $id_product;
+			$data['stock'] 			= $stock;
+			$data['date_logged'] 	= @date('Y-m-d H:i:s');
+
+			$new = DB::table($table_log)->insertGetId($data);
+			DB::table($table_log)->where('id', '=', $new)->delete();
+			return ['logged' => $new];
+		}
 
 		if(count($product_panel) > 0)
 		{

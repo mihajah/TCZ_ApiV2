@@ -7,5 +7,11 @@ trait ModelGetProperties
 	{
 		return (new self)->$prop;
 	}
+
+	public static function setProp($prop, $value)
+	{
+		$self = new self;
+		$self->$prop = $value;
+	}
 }
 ?>

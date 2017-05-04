@@ -4,9 +4,9 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
-use App\Stock;
+use App\Helpers\Stat;
 
-class StockController extends Controller {
+class StatController extends Controller {
 
 	/**
 	 * Display a listing of the resource.
@@ -23,10 +23,10 @@ class StockController extends Controller {
 	 *
 	 * @return Response
 	 */
-	public function oneStock($id)
+	public function forSales($device)
 	{
 		//
-		return Stock::wsOne($id);
+		return Stat::getStatForDevice($device);
 	}
 
 	/**
@@ -77,40 +77,9 @@ class StockController extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function update(Request $verb)
+	public function update($id)
 	{
 		//
-		return Stock::wsUpdate($verb);
-	}
-
-	/**
-	 * Watch the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function tracker($unit_test = '')
-	{
-		//
-		include '/var/www/public_html/stock_tracker/product_panel.php';
-		return Stock::tracker($product_panel, $unit_test);
-	}
-
-	/**
-	 * Update the specified resource in storage.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function inventory(Request $verb)
-	{
-		//
-		if(!$verb->has('id_product') || !$verb->has('sph'))
-		{
-			return ['success' => FALSE, 'error' => 'You must provide id_product, sph'];
-		}
-
-		return Stock::synch($verb);
 	}
 
 	/**

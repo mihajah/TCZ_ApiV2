@@ -64,7 +64,7 @@ class History
 		{
 			foreach($tosort as $k => $row)
 			{
-				if($row['date'] != ''):
+				if(isset($row['date']) && $row['date'] != ''):
 						$sort_asc[$row['dateFull']][] = ['data' => [
 														'date' 			=> $row['date'],
 														'dateFull'		=> $row['dateFull'],

@@ -4,9 +4,9 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
-use App\Stock;
+use App\Helpers\Property;
 
-class StockController extends Controller {
+class ColorController extends Controller {
 
 	/**
 	 * Display a listing of the resource.
@@ -23,10 +23,10 @@ class StockController extends Controller {
 	 *
 	 * @return Response
 	 */
-	public function oneStock($id)
+	public function allColor()
 	{
 		//
-		return Stock::wsOne($id);
+		return Property::set('color')->getAll();
 	}
 
 	/**
@@ -44,9 +44,40 @@ class StockController extends Controller {
 	 *
 	 * @return Response
 	 */
-	public function store()
+	public function store(Request $verb)
 	{
 		//
+		$all 		= $verb->all();
+		$fillable 	= ['name_fr', 'name_alt', 'name_eng', 'code', 'ref'];
+		$fail 		= FALSE;
+
+		if(count($all) != count($fillable))
+		{
+			return ['success' => FALSE, 'erro' => 'You must provide those column', 'column' => $fillable];
+		}
+
+		foreach($fillable as $key)
+		{
+			if(!$verb->has($key))
+			{
+				$fail = TRUE;
+			}
+		}
+
+		if($fail)
+		{
+			return ['success' => FALSE, 'erro' => 'You must provide those column', 'column' => $fillable];
+		}
+
+		$ins = Property::set('color')->store($all);
+		if($ins['success'])
+		{
+			return $ins;
+		}
+		else
+		{
+			return ['success' => FALSE, 'error' => 'Color already exist or invalid value'];
+		}
 	}
 
 	/**
@@ -77,40 +108,9 @@ class StockController extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function update(Request $verb)
+	public function update($id)
 	{
 		//
-		return Stock::wsUpdate($verb);
-	}
-
-	/**
-	 * Watch the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function tracker($unit_test = '')
-	{
-		//
-		include '/var/www/public_html/stock_tracker/product_panel.php';
-		return Stock::tracker($product_panel, $unit_test);
-	}
-
-	/**
-	 * Update the specified resource in storage.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function inventory(Request $verb)
-	{
-		//
-		if(!$verb->has('id_product') || !$verb->has('sph'))
-		{
-			return ['success' => FALSE, 'error' => 'You must provide id_product, sph'];
-		}
-
-		return Stock::synch($verb);
 	}
 
 	/**

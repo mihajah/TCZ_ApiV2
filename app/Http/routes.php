@@ -33,6 +33,9 @@ Route::group(['prefix' => 'products'], function(){
 
 	Route::get('/amazone_request/{id}', ['uses' => 'ProductController@amazone']); //new, from : /amazone_request/products/{id}
 
+	Route::get('/history/{id_ean}/{from?}/{to?}', ['uses' => 'ProductController@historyLog'])
+	->where('id_ean', '[0-9]+');
+
 	//post, put
 	Route::post('/', ['uses' => 'ProductController@store']);
 
@@ -247,10 +250,41 @@ Route::group(['prefix' => 'stocks'], function(){
 	Route::get('/{id}', ['uses' => 'StockController@oneStock'])
 	->where('id', '[0-9]+');
 
-	Route::get('/tracker', ['uses' => 'StockController@tracker']);
+	Route::get('/tracker/{unit_test?}', ['uses' => 'StockController@tracker']);
 
 	//post, put
 	Route::put('/', ['uses' => 'StockController@update']);
 
 	Route::put('/inventory', ['uses' => 'StockController@inventory']);
+});
+
+/**
+* Stat route
+*/
+Route::group(['prefix' => 'stats'], function(){
+
+	//get
+	Route::get('sales/{devices}', ['uses' => 'StatController@forSales'])
+	->where('devices', '[0-9]+');
+});
+
+/**
+* DevicesGroup route
+*/
+Route::group(['prefix' => 'devicesgroup'], function(){
+
+	//post
+	Route::post('/', ['uses' => 'DeviceGroupController@store']);
+});
+
+/**
+* Colors route
+*/
+Route::group(['prefix' => 'colors'], function(){
+
+	//get
+	Route::get('/', ['uses' => 'ColorController@allColor']);
+
+	//post, put
+	Route::post('/', ['uses' => 'ColorController@store']);
 });
