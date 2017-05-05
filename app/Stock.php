@@ -107,6 +107,7 @@ class Stock extends Model {
 			$data['qty_real'] 		= $stock_bdd_new;
 			$data['qty_change']  	= $change;
 			$data['reason']  		= 4;
+
 			if($verb->has('unit_test'))
 			{
 				$data['unit_test']  = 'unit_test';
@@ -177,6 +178,7 @@ class Stock extends Model {
 		$data['qty_real'] 		= $stock_bdd_new;
 		$data['qty_change']  	= $change_theo;
 		$data['reason']  		= 6;
+
 		if($verb->has('unit_test'))
 		{
 			$data['unit_test']  = 'unit_test';
@@ -248,6 +250,7 @@ class Stock extends Model {
 			$value['qty_from'] 		= $data['qty_from'];
 			$value['reason'] 		= json_encode($reason);
 			$value['date_updated'] 	= @date('Y-m-d H:i:s');
+			
 			if(isset($data['unit_test']))
 			{
 				$id = DB::table($table)->insertGetId($value);
@@ -411,7 +414,7 @@ class Stock extends Model {
 		}
 
 		$result = DB::table($po)->join($pcp, $po.'.id_cart', '=', $pcp.'.id_cart')
-		->select($pcp.'.quantity AS qt')
+		->select($pcp.'.quantity AS QT')
 		->where($pcp.'.id_product', '=', $product)
 		->whereIn($po.'.current_state', [1, 2, 3, 14, 15])
 		->get();

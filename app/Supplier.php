@@ -95,16 +95,16 @@ class Supplier extends Model {
 		foreach($result as $one)
 		{
 			$attr = Product::wsOne($one->id_product);			
-			$order[] = [
-						'id' 			=> $one->id_product,
-						'buying_price' 	=> $one->buying_price,
-						'parcel_number' => $one->parcel_number,
-						'weight' 		=> $one->weight, 
-						'qty_wanted' 	=> $one->qty_wanted, 
-						'qty_shipped' 	=> $one->qty_shipped, 
-						'qty_received' 	=> $one->qty_received,
-						'about_prd'		=> $attr
-					];
+			$order[] = 	[
+							'id' 			=> $one->id_product,
+							'buying_price' 	=> $one->buying_price,
+							'parcel_number' => $one->parcel_number,
+							'weight' 		=> $one->weight, 
+							'qty_wanted' 	=> $one->qty_wanted, 
+							'qty_shipped' 	=> $one->qty_shipped, 
+							'qty_received' 	=> $one->qty_received,
+							'about_prd'		=> $attr
+						];
 		}
 
 		return $order;

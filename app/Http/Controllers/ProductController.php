@@ -158,7 +158,7 @@ class ProductController extends Controller {
 			return $all;
 		}
 		else
-		{
+		{ 
 			return Product::getFullSchema($id);
 		}
 	}

@@ -37,8 +37,12 @@ class Product extends Model {
 	public static function wsOne($id_ean, $vmode = 'arr')
 	{
 		$data  = [];
-		$id    = PS::product($id_ean, 'PT.id_product'); //beware!! ean -> id conversion
-		$full  = self::remapProductAttributes($id);
+		$id    = PS::product($id_ean, 'PT.id_product'); //beware!! ean -> id conversion		
+		if(!self::find($id))
+		{
+			return [];
+		}
+		
 		$field = [
 					'id',
 					'name',
@@ -61,11 +65,7 @@ class Product extends Model {
 					'stock'
 				 ];
 
-		foreach($field as $key)
-		{
-			$data[$key] = $full->$key;
-		}
-
+		$data  = self::remapProductAttributes($id, $field, 'arr');
 		if($vmode == 'obj')
 			return (object) $data;
 
@@ -557,7 +557,7 @@ class Product extends Model {
 			$data['height'] 			= ['value' => PS::product($id, 'PT.height'), 'display' => PS::product($id, 'PT.height')];
 
 		if(in_array('weight', $display))
-			$data['weight'] 			= ['value' => PS::product($id, 'PT.weight'), 'display' => PS::product($id, 'PT.weight')];
+			$data['weight'] 			= ['value' => PS::product($id, 'PT.weight'), 'display' => PS::product($id, 'PT.weight') * 1000];
 
 		if(in_array('depth', $display))
 			$data['depth'] 				= ['value' => PS::product($id, 'PT.depth'),  'display' => PS::product($id, 'PT.depth')];
@@ -803,7 +803,7 @@ class Product extends Model {
 				$full_data = self::remapProductAttributes($pl->id_product);
 				$p->fullproduct  = [];
 				$p->fullproduct  = $full_data;
-				$p->selling_info = ['soldOnTouchiz' => $full_data->soldOnTouchiz, 'soldOnTechtablet' => $full_data->soldOnTechtablet];
+				//$p->selling_info = ['soldOnTouchiz' => $full_data->soldOnTouchiz, 'soldOnTechtablet' => $full_data->soldOnTechtablet];
 				$product_pass[]  = $p;
 			}
 		}
