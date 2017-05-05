@@ -13,7 +13,6 @@ Class StockTest extends TestCase{
 		if($this->isTestable)
 		{
 			$this->checkHttpStatus();
-			$this->checkHttpStatus('POST');
 			$this->checkHttpStatus('PUT');
 		}
 	}
@@ -24,7 +23,7 @@ Class StockTest extends TestCase{
 		{
 			$route = [
 						'stocks/3630',
-						'stocks/tracker/unit_test'
+						//'stocks/tracker/unit_test'
 			     	 ];
 
 			foreach($route as $uri)
