@@ -44,9 +44,38 @@ class PatternController extends Controller {
 	 *
 	 * @return Response
 	 */
-	public function store()
+	public function store(Request $verb)
 	{
 		//
+		if(!$verb->has('pattern_name'))
+		{
+			return ['success' => FALSE, 'error' => 'You must provide pattern_name'];
+		}
+
+		$data['pattern_name'] 		= $verb->input('pattern_name');
+		$data['supplier_name'] 		= '';
+		$data['menu'] 				= 0;
+
+		if($verb->has('supplier_name') && $verb->input('supplier_name') != '')
+		{
+			$data['supplier_name'] 	= $verb->input('supplier_name');
+		}
+
+		if($verb->has('menu') && $verb->input('menu') != '')
+		{
+			$data['menu'] 			= $verb->input('menu');
+		}
+
+		$ins = Property::set('pattern')->store($data);
+
+		if($ins['success'])
+		{
+			return $ins;
+		}
+		else
+		{
+			return ['success' => FALSE, 'error' => 'Pattern already exist or invalid value'];
+		}
 	}
 
 	/**
@@ -77,9 +106,39 @@ class PatternController extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function update($id)
+	public function update(Request $verb)
 	{
 		//
+		if(!$verb->has('pattern_name') || !$verb->has('id'))
+		{
+			return ['success' => FALSE, 'error' => 'You must provide id, pattern_name'];
+		}
+
+		$data['pattern_name'] 		= $verb->input('pattern_name');
+		$data['id'] 				= $verb->input('id');
+		$data['supplier_name'] 		= '';
+		$data['menu'] 				= 0;
+
+		if($verb->has('supplier_name') && $verb->input('supplier_name') != '')
+		{
+			$data['supplier_name'] 	= $verb->input('supplier_name');
+		}
+
+		if($verb->has('menu') && $verb->input('menu') != '')
+		{
+			$data['menu'] 			= $verb->input('menu');
+		}
+
+		$edit = Property::set('pattern')->edit($data);
+
+		if($edit['success'])
+		{
+			return $edit;
+		}
+		else
+		{
+			return ['success' => FALSE, 'error' => 'Pattern already exist or invalid value'];
+		}
 	}
 
 	/**

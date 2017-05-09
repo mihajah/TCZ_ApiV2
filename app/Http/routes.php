@@ -356,7 +356,7 @@ Route::group(['prefix' => 'patterns'], function(){
 	Route::get('/', ['uses' => 'PatternController@allPattern']);
 
 	//post, put
-	//Route::post('/', ['uses' => 'SubTypeController@store']);
+	Route::post('/', ['uses' => 'PatternController@store']);
 
-	//Route::put('/', ['uses' => 'SubTypeController@update']);
+	Route::put('/', ['uses' => 'PatternController@update']);
 });
