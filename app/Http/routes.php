@@ -287,4 +287,76 @@ Route::group(['prefix' => 'colors'], function(){
 
 	//post, put
 	Route::post('/', ['uses' => 'ColorController@store']);
+
+	Route::put('/', ['uses' => 'ColorController@update']);
+});
+
+/**
+* Types route
+*/
+Route::group(['prefix' => 'types'], function(){
+
+	//get
+	Route::get('/', ['uses' => 'TypeController@allType']);
+
+	//post, put
+	Route::post('/', ['uses' => 'TypeController@store']);
+
+	Route::put('/', ['uses' => 'TypeController@update']);
+});
+
+/**
+* Materials route
+*/
+Route::group(['prefix' => 'materials'], function(){
+
+	//get
+	Route::get('/', ['uses' => 'MaterialController@allMaterial']);
+
+	//post, put
+	Route::post('/', ['uses' => 'MaterialController@store']);
+
+	Route::put('/', ['uses' => 'MaterialController@update']);
+});
+
+/**
+* Features route
+*/
+Route::group(['prefix' => 'features'], function(){
+
+	//get
+	Route::get('/', ['uses' => 'FeatureController@allFeature']);
+
+	//post, put
+	Route::post('/', ['uses' => 'FeatureController@store']);
+
+	Route::put('/', ['uses' => 'FeatureController@update']);
+});
+
+/**
+* SubTypes route
+*/
+Route::group(['prefix' => 'subtypes'], function(){
+
+	//get
+	Route::get('/', ['uses' => 'SubTypeController@allSubType']);
+
+	//post, put
+	Route::post('/', ['uses' => 'SubTypeController@store']);
+
+	Route::put('/', ['uses' => 'SubTypeController@update']);
+});
+
+/**
+* SubTypes route
+*/
+Route::group(['prefix' => 'patterns'], function(){
+
+	//get
+	Route::get('/', ['uses' => 'PatternController@allPattern']);
+
+	//post, put
+	//Route::post('/', ['uses' => 'SubTypeController@store']);
+
+	//Route::put('/', ['uses' => 'SubTypeController@update']);
 });

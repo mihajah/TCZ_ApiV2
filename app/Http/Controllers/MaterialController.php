@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Helpers\Property;
 
-class ColorController extends Controller {
+class MaterialController extends Controller {
 
 	/**
 	 * Display a listing of the resource.
@@ -23,10 +23,10 @@ class ColorController extends Controller {
 	 *
 	 * @return Response
 	 */
-	public function allColor()
+	public function allMaterial()
 	{
 		//
-		return Property::set('color')->getAll();
+		return Property::set('material')->getAll();
 	}
 
 	/**
@@ -47,36 +47,35 @@ class ColorController extends Controller {
 	public function store(Request $verb)
 	{
 		//
-		$all 		= $verb->all();
-		$fillable 	= ['name_fr', 'name_alt', 'name_eng', 'code', 'ref'];
-		$fail 		= FALSE;
-
-		if(count($all) != count($fillable))
+		if(!$verb->has('material_name'))
 		{
-			return ['success' => FALSE, 'error' => 'You must provide those column', 'column' => $fillable];
+			return ['success' => FALSE, 'error' => 'You must provide material_name'];
 		}
 
-		foreach($fillable as $key)
+		$data['material_name'] 	= $verb->input('material_name');
+		$data['supplier_name'] 	= '';
+		$data['menu'] 			= 0;
+
+
+		if($verb->has('supplier_name'))
 		{
-			if(!$verb->has($key))
-			{
-				$fail = TRUE;
-			}
+			$data['supplier_name'] 	= $verb->input('supplier_name');
 		}
 
-		if($fail)
+		if($verb->has('menu'))
 		{
-			return ['success' => FALSE, 'erro' => 'You must provide those column', 'column' => $fillable];
+			$data['menu'] 			= $verb->input('menu');
 		}
 
-		$ins = Property::set('color')->store($all);
+		$ins = Property::set('material')->store($data);
+
 		if($ins['success'])
 		{
 			return $ins;
 		}
 		else
 		{
-			return ['success' => FALSE, 'error' => 'Color already exist or invalid value'];
+			return ['success' => FALSE, 'error' => 'Material already exist or invalid value'];
 		}
 	}
 
@@ -111,37 +110,38 @@ class ColorController extends Controller {
 	public function update(Request $verb)
 	{
 		//
-		$all 		= $verb->all();
-		$fillable 	= ['id', 'name_fr', 'name_alt', 'name_eng', 'code', 'ref'];
-		$fail 		= FALSE;
-
-		if(count($all) != count($fillable))
+		if(!$verb->has('material_name') || !$verb->has('id'))
 		{
-			return ['success' => FALSE, 'error' => 'You must provide those column', 'column' => $fillable];
+			return ['success' => FALSE, 'error' => 'You must provide id, material_name'];
 		}
 
-		foreach($fillable as $key)
+		$data['material_name'] 	= $verb->input('material_name');
+		$data['supplier_name'] 	= '';
+		$data['menu'] 			= 0;
+		$data['id'] 			= $verb->input('id');
+
+
+		if($verb->has('supplier_name'))
 		{
-			if(!$verb->has($key))
-			{
-				$fail = TRUE;
-			}
+			$data['supplier_name'] 	= $verb->input('supplier_name');
 		}
 
-		if($fail)
+		if($verb->has('menu'))
 		{
-			return ['success' => FALSE, 'error' => 'You must provide those column', 'column' => $fillable];
+			$data['menu'] 			= $verb->input('menu');
 		}
 
-		$edit = Property::set('color')->edit($all);
+		$edit = Property::set('material')->edit($data);
+
 		if($edit['success'])
 		{
 			return $edit;
 		}
 		else
 		{
-			return ['success' => FALSE, 'error' => 'Color already exist or invalid value'];
+			return ['success' => FALSE, 'error' => 'Material already exist or invalid value'];
 		}
+
 	}
 
 	/**

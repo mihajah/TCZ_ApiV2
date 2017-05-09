@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Helpers\Property;
 
-class ColorController extends Controller {
+class TypeController extends Controller {
 
 	/**
 	 * Display a listing of the resource.
@@ -23,10 +23,10 @@ class ColorController extends Controller {
 	 *
 	 * @return Response
 	 */
-	public function allColor()
+	public function allType()
 	{
 		//
-		return Property::set('color')->getAll();
+		return Property::set('type')->getAll();
 	}
 
 	/**
@@ -48,8 +48,8 @@ class ColorController extends Controller {
 	{
 		//
 		$all 		= $verb->all();
-		$fillable 	= ['name_fr', 'name_alt', 'name_eng', 'code', 'ref'];
 		$fail 		= FALSE;
+		$fillable 	= ['type_name', 'type_alt', 'type_display', 'type_title', 'html_name', 'type_desc', 'type_one', 'type_filter'];
 
 		if(count($all) != count($fillable))
 		{
@@ -66,17 +66,18 @@ class ColorController extends Controller {
 
 		if($fail)
 		{
-			return ['success' => FALSE, 'erro' => 'You must provide those column', 'column' => $fillable];
+			return ['success' => FALSE, 'error' => 'You must provide those column', 'column' => $fillable];
 		}
 
-		$ins = Property::set('color')->store($all);
+		$ins = Property::set('type')->store($all);
+
 		if($ins['success'])
 		{
 			return $ins;
 		}
 		else
 		{
-			return ['success' => FALSE, 'error' => 'Color already exist or invalid value'];
+			return ['success' => FALSE, 'error' => 'Type already exist or invalid value'];
 		}
 	}
 
@@ -112,8 +113,8 @@ class ColorController extends Controller {
 	{
 		//
 		$all 		= $verb->all();
-		$fillable 	= ['id', 'name_fr', 'name_alt', 'name_eng', 'code', 'ref'];
 		$fail 		= FALSE;
+		$fillable 	= ['id', 'type_name', 'type_alt', 'type_display', 'type_title', 'html_name', 'type_desc', 'type_one', 'type_filter'];
 
 		if(count($all) != count($fillable))
 		{
@@ -133,14 +134,15 @@ class ColorController extends Controller {
 			return ['success' => FALSE, 'error' => 'You must provide those column', 'column' => $fillable];
 		}
 
-		$edit = Property::set('color')->edit($all);
+		$edit = Property::set('type')->edit($all);
+
 		if($edit['success'])
 		{
 			return $edit;
 		}
 		else
 		{
-			return ['success' => FALSE, 'error' => 'Color already exist or invalid value'];
+			return ['success' => FALSE, 'error' => 'Type already exist or invalid value'];
 		}
 	}
 
