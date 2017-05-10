@@ -446,5 +446,202 @@ class GazFactory
 		
 		return $str2;
 	}
+
+	public static function getAllProductsWithFilter(&$total = 0, $range = null, $filter = null, $search = null, $quicksort = null)
+	{
+		$dbmatch = 	[
+						"type" 			=> "T.id_type",
+						"fordevice" 	=> "F.id_device",
+						"feature" 		=> "FE.id_feature",
+						"supplier" 		=> "SU.id_supplier",
+						"tag" 			=> "TA.id_tag",
+						"subtype" 		=> "S.id_subtype",
+						"color" 		=> "C.id_color",
+						"material" 		=> "M.id_material",
+						"pattern" 		=> "A.id_pattern",
+						"active" 		=> "P.active",
+						"obsolete" 		=> "Q.is_obsolete",
+						"check" 		=> "Q.is_check",
+						"fordevicewith" => "DW.id_fordevicewith",
+						"brand" 		=> "BR.id_brand",
+						"spicture1"		=> "Q.spicture1",
+						"numbox" 		=> "Q.numbox"
+					];
+
+		if(isset($filter['id']) && !empty($filter['id'])) 
+		{
+			$request 	= "SELECT DISTINCT id_product FROM ps_product WHERE id_product = ".$filter['id'];
+			$start 		= 0;
+			$end 		= 0;
+		} 
+		else 
+		{
+			// define the extra filter array and the attribute filter array
+			$dbfilters = []; 
+			// build the filter arrays
+
+			if(isset($filter)) 
+			{
+				foreach($filter as $key => $value)
+				{
+					if ($key == "quantitylowerthan" && intval($value) > 0) 
+					{
+						$fstring = "SA.quantity < ".$value;
+					} 
+					else 
+					{
+						//print $key." '".$value."'<br>";
+						if(trim($value) == "")
+							continue;
+						// Explode the lists into single parameters
+						$flist = split(";", $value);
+						if(!count($flist)) 
+						{
+							//print " is empty ";
+							continue;
+						}
+
+						if(!isset($dbmatch[$key])) 
+						{
+							//print " is empty2 ";
+							continue;
+						}
+
+						// Now build the filters array
+						$fstring = "(".$dbmatch[$key]." = '".trim($flist[0])."' ";
+						for($i = 1; $i < count($flist); $i++) 
+						{
+							$fstring = $fstring." OR ".$dbmatch[$key]." = '".trim($flist[$i])."' ";
+						}
+					
+						$fstring = $fstring.")";
+					}
+
+					$dbfilters[] = $fstring;
+				}
+			}
+
+			//print_r($dbfilters);
+			$request = " SELECT DISTINCT P.id_product,N.name,Q.sold30,Q.sold60,Q.sold,P.ean13 FROM ps_product as P
+						 LEFT JOIN ps_product_lang AS N ON P.id_product = N.id_product AND N.id_lang =1
+						 LEFT JOIN apb_prd AS Q ON P.id_product = Q.id_product
+						 LEFT JOIN apb_types AS T ON Q.id_type = T.id_type
+						 LEFT JOIN apb_subtypes AS S ON Q.id_subtype = S.id_subtype
+						 LEFT JOIN apb_colors AS C ON Q.id_color = C.id_color
+						 LEFT JOIN apb_materials AS M ON Q.id_material = M.id_material
+						 LEFT JOIN apb_prd_supplier AS SU ON Q.id_product = SU.id_product
+						 LEFT JOIN apb_patterns AS A ON Q.id_pattern = A.id_pattern
+						 LEFT JOIN apb_prd_fordevice as F ON P.id_product = F.id_product
+						 LEFT JOIN apb_prd_feature as FE ON P.id_product = FE.id_product
+						 LEFT JOIN apb_prd_fordevicewith as DW ON P.id_product = DW.id_product
+						 LEFT JOIN apb_prd_tag as TA ON P.id_product = TA.id_product
+						 LEFT JOIN apb_brands as BR ON Q.id_brand = BR.id_brand
+						 LEFT JOIN ps_stock_available as SA ON P.id_product = SA.id_product
+					   ";
+
+			if(isset($filter['newproduct']) && $filter['newproduct']) 
+			{
+				$request .= " LEFT JOIN apb_prd_order as ORD ON P.id_product = ORD.id_product ";
+			}
+
+			if(count($dbfilters) || !empty($search)) 
+			{
+				$request .= " WHERE ";
+			}
+
+			for($i = 0; $i<count($dbfilters); $i++) 
+			{
+				if($i)
+					$request .= " AND ".$dbfilters[$i];
+				else
+					$request .= $dbfilters[$i];
+					
+			}
+
+			if(!empty($search)) 
+			{
+				if (count($dbfilters)) 
+				{
+					$request .= " AND ";
+				}
+
+				$request .= "N.name LIKE '%".$search."%'";
+			}
+
+			//print "---->".$filter['newproduct']."<----";
+			if(isset($filter['newproduct']) && $filter['newproduct']) 
+			{
+				$request .= " AND (ORD.id_order IS NULL OR ORD.qty_received = 0) AND P.id_product>1500";
+				//print $request;
+			}
+
+
+			//$request.=" AND Q.id_brand = 0 ";
+			
+			// Add limits if any available
+			if(!empty($range)) 
+			{
+				$start 	= $range[0];
+				$end 	= $range[1];
+			}
+
+			if(is_null($quicksort)) 
+			{
+				$request .= " ORDER BY P.id_product DESC";
+			} 
+			else if($quicksort == "sold") 
+			{
+				$request .= " ORDER BY Q.sold DESC";
+			}
+			else if($quicksort == "sold30") 
+			{
+				$request .= " ORDER BY Q.sold30 DESC";
+			} 
+			else if($quicksort == "sold60") 
+			{
+				$request .= " ORDER BY Q.sold60 DESC";
+			} 
+			else if($quicksort == "wishbuy") 
+			{
+				$request .= " ORDER BY Q.wishbuy DESC";
+			}
+		}
+
+		//$request .= " LIMIT ".$start.",".$end;
+	
+		//print "<br>".$request."<br>";
+		
+		$res = DB::select($request);
+		
+		if(count($res) == 0) 
+		{
+			return [];
+		}
+		
+		// only one id kept
+		$n 				= 0;
+		$products 		= [];
+		$products[$n] 	= $res[0]->id_product;
+		$n++;
+
+		for($i = 1; $i < count($res); $i++) 
+		{
+			//if ($res[$i]['name']
+			if ($products[$n-1] != $res[$i]->id_product) 
+			{
+				$products[$n] = $res[$i]->id_product;
+				$n++;
+			}
+		}
+
+		$total = $n;
+		
+		if (!empty($range))
+			$finalarray = array_slice($products, $start, $end - $start + 1);
+		else
+			$finalarray = $products;
+
+		return $finalarray;
+	}
 }
 ?>

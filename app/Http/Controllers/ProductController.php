@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 use App\Helpers\Prestashop as PS;
+use App\Helpers\GazFactory as GZ;
 use App\Helpers\History;
 use App\Product;
 use App\Device;
@@ -238,6 +239,66 @@ class ProductController extends Controller {
 		//
 		return Product::edit($verb);
 	}
+
+	/**
+	 * Display a listing of the resource.
+	 *
+	 * @return Response
+	 */
+	public function obsoletizer(Request $verb)
+	{
+		//
+		if(!$verb->has('type'))
+		{
+			return ['success' => FALSE, 'error' => 'You must provide type'];
+		}
+
+		$type = $verb->input('type');
+		$type = strtolower($type);
+		$type = trim($type);
+
+		if($type == 'obsolete')
+		{
+			$attr = 1;
+		}
+		else if($type == 'non obsolete')
+		{
+			$attr = 0;
+		}
+		else
+		{
+			return ['success' => FALSE, 'error' => 'Type not allowed'];
+		}
+
+		if($verb->has('products') && !$verb->has('collectionID'))
+		{
+			$products = $verb->input('products');
+		}
+		else if(!$verb->has('products') && $verb->has('collectionID'))
+		{
+			$collection = $verb->input('collectionID');
+			$products 	= Product::allProductInOnecollection($collection);
+		}
+		else
+		{
+			return ['success' => FALSE, 'error' => 'Operation undefined'];
+		}
+
+		if(count($products) > 0)
+		{
+			foreach($products as $one)
+			{
+				Product::where('id_product', '=', $one['id'])->update(['is_obsolete' => $attr]);
+			}
+
+			return ['success' => TRUE, 'error' => 'no error'];
+		}
+		else
+		{
+			return ['success' => FALSE, 'error' => 'No product found'];
+		}
+	}
+
 
 	/**
 	 * Update the specified resource in storage.

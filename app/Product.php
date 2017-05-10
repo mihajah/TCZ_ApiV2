@@ -395,6 +395,27 @@ class Product extends Model {
 		}
 	}
 
+	public static function allProductInOnecollection($collection)
+	{
+		$result = [];
+		$list = GF::getAllProductsWithFilter();
+		foreach($list as $product)
+		{
+			$col = self::getCollection($product);
+			if($col['id'] == $collection)
+			{
+				$result[] = ['id' => $product];
+			}			
+		}
+
+		return $result;
+	}
+
+	public static function getCollection($product)
+	{
+		$map = ['id_collection' => 'id', 'collection_name' => 'name', 'alt_name' => 'alt_name'];
+		return self::find($product)->linkCollection($map);
+	}
 
 	/**
 	* Internal method

@@ -46,6 +46,8 @@ Route::group(['prefix' => 'products'], function(){
 	Route::put('/remove_quantity/{id_product}', ['uses' => 'ProductController@removeQuantity']) //new, from : /products/{id}/remove/{qty}
 	->where('id_product', '[0-9]+');
 
+	Route::put('/obsolete', ['uses' => 'ProductController@obsoletizer']); //new
+
 
 	//debug, test
 	Route::get('/new_product', ['uses' => 'ProductController@create']); 
@@ -359,4 +361,15 @@ Route::group(['prefix' => 'patterns'], function(){
 	Route::post('/', ['uses' => 'PatternController@store']);
 
 	Route::put('/', ['uses' => 'PatternController@update']);
+});
+
+/**
+* DeviceValues route
+*/
+Route::group(['prefix' => 'devicesattr'], function(){
+
+	//get
+	Route::get('/', ['uses' => 'DeviceValueController@allValue']);
+
+	//post, put
 });

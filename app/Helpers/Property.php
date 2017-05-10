@@ -9,6 +9,7 @@ use App\Material;
 use App\Feature;
 use App\SubType;
 use App\Pattern;
+use App\DeviceValue;
 
 class Property {
 
@@ -56,6 +57,12 @@ class Property {
 		{
 			$Pattern = new Pattern;
 			return $Pattern;
+		}
+
+		if($name == 'deviceValue')
+		{
+			$DeviceValue = new DeviceValue;
+			return $DeviceValue;
 		}
 	}
 
