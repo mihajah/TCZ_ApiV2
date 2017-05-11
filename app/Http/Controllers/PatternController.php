@@ -70,6 +70,12 @@ class PatternController extends Controller {
 
 		if($ins['success'])
 		{
+			if($verb->has('unit_test'))
+			{
+				$id = $ins['data']['id_pattern'];
+				Property::set('pattern')->remove($id);
+			}
+
 			return $ins;
 		}
 		else
@@ -127,6 +133,11 @@ class PatternController extends Controller {
 		if($verb->has('menu') && $verb->input('menu') != '')
 		{
 			$data['menu'] 			= $verb->input('menu');
+		}
+
+		if($verb->has('unit_test'))
+		{
+			return ['success' => TRUE];
 		}
 
 		$edit = Property::set('pattern')->edit($data);

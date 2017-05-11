@@ -98,4 +98,8 @@ class Feature extends Model {
 		return ['success' => TRUE, 'data' => self::find($raw['id'])];
 	}
 
+	public function remove($id)
+	{
+		self::destroy($id);
+	}
 }

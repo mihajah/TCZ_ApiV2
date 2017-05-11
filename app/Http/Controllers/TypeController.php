@@ -47,7 +47,7 @@ class TypeController extends Controller {
 	public function store(Request $verb)
 	{
 		//
-		$all 		= $verb->all();
+		$all 		= $verb->except('unit_test');
 		$fail 		= FALSE;
 		$fillable 	= ['type_name', 'type_alt', 'type_display', 'type_title', 'html_name', 'type_desc', 'type_one', 'type_filter'];
 
@@ -73,6 +73,13 @@ class TypeController extends Controller {
 
 		if($ins['success'])
 		{
+			if($verb->has('unit_test'))
+			{
+				//
+				$id = $ins['data']['id_type'];
+				Property::set('type')->remove($id);
+			}
+
 			return $ins;
 		}
 		else
@@ -112,7 +119,7 @@ class TypeController extends Controller {
 	public function update(Request $verb)
 	{
 		//
-		$all 		= $verb->all();
+		$all 		= $verb->except('unit_test');
 		$fail 		= FALSE;
 		$fillable 	= ['id', 'type_name', 'type_alt', 'type_display', 'type_title', 'html_name', 'type_desc', 'type_one', 'type_filter'];
 
@@ -134,7 +141,14 @@ class TypeController extends Controller {
 			return ['success' => FALSE, 'error' => 'You must provide those column', 'column' => $fillable];
 		}
 
+
+
 		$edit = Property::set('type')->edit($all);
+
+		if($verb->has('unit_test'))
+		{
+			return ['success' => TRUE];
+		}
 
 		if($edit['success'])
 		{

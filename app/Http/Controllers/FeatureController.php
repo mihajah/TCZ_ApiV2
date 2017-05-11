@@ -81,6 +81,12 @@ class FeatureController extends Controller {
 
 		if($ins['success'])
 		{
+			if($verb->has('unit_test'))
+			{
+				$id = $ins['data']['id_feature'];
+				Property::set('feat')->remove($id);
+			}
+			
 			return $ins;
 		}
 		else
@@ -149,6 +155,11 @@ class FeatureController extends Controller {
 		if($verb->input('menu') != '' && $verb->has('menu'))
 		{
 			$data['menu'] 			= $verb->input('menu');
+		}
+
+		if($verb->has('unit_test'))
+		{
+			return ['success' => TRUE];
 		}
 
 		$edit = Property::set('feat')->edit($data);

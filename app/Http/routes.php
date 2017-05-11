@@ -372,4 +372,5 @@ Route::group(['prefix' => 'devicesattr'], function(){
 	Route::get('/', ['uses' => 'DeviceValueController@allValue']);
 
 	//post, put
+	//
 });

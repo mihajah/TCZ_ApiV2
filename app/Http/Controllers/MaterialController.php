@@ -71,6 +71,12 @@ class MaterialController extends Controller {
 
 		if($ins['success'])
 		{
+			if($verb->has('unit_test'))
+			{
+				$id = $ins['data']['id_material'];
+				Property::set('material')->remove($id);
+			}
+
 			return $ins;
 		}
 		else
@@ -129,6 +135,11 @@ class MaterialController extends Controller {
 		if($verb->has('menu'))
 		{
 			$data['menu'] 			= $verb->input('menu');
+		}
+
+		if($verb->has('unit_test'))
+		{
+			return ['success' => TRUE];
 		}
 
 		$edit = Property::set('material')->edit($data);

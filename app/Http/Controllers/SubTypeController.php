@@ -47,7 +47,7 @@ class SubTypeController extends Controller {
 	public function store(Request $verb)
 	{
 		//
-		$all 		= $verb->all();
+		$all 		= $verb->except('unit_test');
 		$fail		= FALSE;
 		$fillable 	= ['subtype_name', 'subtype_alt', 'subtype_display', 'subtype_one'];
 
@@ -73,6 +73,12 @@ class SubTypeController extends Controller {
 
 		if($ins['success'])
 		{	
+			if($verb->has('unit_test'))
+			{
+				$id = $ins['data']['id_subtype'];
+				Property::set('subtype')->remove($id);
+			}
+
 			return $ins;
 		}
 		else
@@ -112,16 +118,16 @@ class SubTypeController extends Controller {
 	public function update(Request $verb)
 	{
 		//
-		$all 		= $verb->all();
+		$all 		= $verb->except('unit_test');
 		$fail		= FALSE;
-		$fillable 	= ['id', 'subtype_name', 'subtype_alt', 'subtype_display', 'subtype_one'];
+		$editable 	= ['id', 'subtype_name', 'subtype_alt', 'subtype_display', 'subtype_one'];
 
-		if(count($all) != count($fillable))
+		if(count($all) != count($editable))
 		{
-			return ['success' => FALSE, 'error' => 'You must provide those column', 'column' => $fillable];
+			return ['success' => FALSE, 'error' => 'You must provide those column', 'column' => $editable];
 		}
 
-		foreach($fillable as $key)
+		foreach($editable as $key)
 		{
 			if(!$verb->has($key))
 			{
@@ -131,7 +137,12 @@ class SubTypeController extends Controller {
 
 		if($fail)
 		{
-			return ['success' => FALSE, 'error' => 'You must provide those column', 'column' => $fillable];
+			return ['success' => FALSE, 'error' => 'You must provide those column', 'column' => $editable];
+		}
+
+		if($verb->has('unit_test'))
+		{
+			return ['success' => TRUE];
 		}
 
 		$edit = Property::set('subtype')->edit($all);

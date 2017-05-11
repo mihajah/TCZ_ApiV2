@@ -13,6 +13,7 @@ use App\DeviceValue;
 
 class Property {
 
+	protected $error = ['error' => 'Property not found', 'Available property' => ['deviceGroup', 'color', 'type', 'material', 'feat', 'subtype', 'pattern', 'deviceValue']];
 	use ModelGetProperties;
 
 	public static function set($name)
@@ -64,7 +65,11 @@ class Property {
 			$DeviceValue = new DeviceValue;
 			return $DeviceValue;
 		}
+
+		echo json_encode(self::getProp('error'));
+		exit;
 	}
+
 
 }
 ?>

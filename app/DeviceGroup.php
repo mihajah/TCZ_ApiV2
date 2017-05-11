@@ -62,4 +62,24 @@ class DeviceGroup extends Model {
 		return self::find($raw['id_group']);
 	}
 
+	public function getAllByBrand($brand)
+	{	
+		$data 	= [];
+		$result = self::where('id_brand', '=', $brand)->get();
+		if(count($result) > 0)
+		{
+			foreach($result as $one)
+			{
+				$data[] = (object) ['id' => $one->id_group, 'name' => $one->group_name, 'forBrand' => $one->id_brand];
+			}
+		}
+
+		return $result;
+	}
+
+	public function remove($id)
+	{
+		self::destroy($id);
+	}
+
 }

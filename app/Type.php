@@ -111,4 +111,9 @@ class Type extends Model {
 		self::where('id_type', '=', $raw['id'])->update($data);
 		return ['success' => TRUE, 'data' => self::find($raw['id'])];
 	}
+
+	public function remove($id)
+	{	
+		self::destroy($id);
+	}
 }

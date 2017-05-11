@@ -47,7 +47,7 @@ class ColorController extends Controller {
 	public function store(Request $verb)
 	{
 		//
-		$all 		= $verb->all();
+		$all 		= $verb->except('unit_test');
 		$fillable 	= ['name_fr', 'name_alt', 'name_eng', 'code', 'ref'];
 		$fail 		= FALSE;
 
@@ -71,7 +71,12 @@ class ColorController extends Controller {
 
 		$ins = Property::set('color')->store($all);
 		if($ins['success'])
-		{
+		{	
+			if($verb->has('unit_test'))
+			{
+				Property::set('color')->remove($ins['data']['id_color']);
+			}
+
 			return $ins;
 		}
 		else
@@ -111,16 +116,16 @@ class ColorController extends Controller {
 	public function update(Request $verb)
 	{
 		//
-		$all 		= $verb->all();
-		$fillable 	= ['id', 'name_fr', 'name_alt', 'name_eng', 'code', 'ref'];
+		$all 		= $verb->except('unit_test');
+		$editable 	= ['id', 'name_fr', 'name_alt', 'name_eng', 'code', 'ref'];
 		$fail 		= FALSE;
 
-		if(count($all) != count($fillable))
+		if(count($all) != count($editable))
 		{
-			return ['success' => FALSE, 'error' => 'You must provide those column', 'column' => $fillable];
+			return ['success' => FALSE, 'error' => 'You must provide those column', 'column' => $editable];
 		}
 
-		foreach($fillable as $key)
+		foreach($editable as $key)
 		{
 			if(!$verb->has($key))
 			{
@@ -130,7 +135,12 @@ class ColorController extends Controller {
 
 		if($fail)
 		{
-			return ['success' => FALSE, 'error' => 'You must provide those column', 'column' => $fillable];
+			return ['success' => FALSE, 'error' => 'You must provide those column', 'column' => $editable];
+		}
+
+		if($verb->has('unit_test'))
+		{
+			return ['success' => TRUE];
 		}
 
 		$edit = Property::set('color')->edit($all);

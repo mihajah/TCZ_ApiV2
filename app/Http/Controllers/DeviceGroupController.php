@@ -36,6 +36,11 @@ class DeviceGroupController extends Controller {
 	public function store(Request $verb)
 	{
 		//
+		if(!$verb->has('name') || !$verb->has('brandID'))
+		{	
+			return ['success' => FALSE, 'error' => 'You must provide name, brandID'];
+		}
+
 		$groupName 	= $verb->input('name');
 		$groupId 	= $verb->input('brandID');
 
@@ -74,6 +79,11 @@ class DeviceGroupController extends Controller {
 				$data['id_brand'] 			= $groupId;
 				$data['group_popularity'] 	= 0;
 				$ins = Property::set('deviceGroup')->store($data);
+				if($verb->has('unit_test'))
+				{
+					Property::set('deviceGroup')->remove($ins['id_group']);
+				}
+				
 				return ['success' => $ins];
 			}
 			else
@@ -94,7 +104,7 @@ class DeviceGroupController extends Controller {
 				$data['group_name'] = $groupName;
 				$data['id_brand'] 	= $groupId;
 				$data['id_group'] 	= $id;
-				$upd = Property::set('deviceGroup')->edit($data);
+				$upd = Property::set('deviceGroup')->edit($data);				
 				return  ['success' => $upd];
 			}
 		}
