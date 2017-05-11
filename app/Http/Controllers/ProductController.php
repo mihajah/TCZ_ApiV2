@@ -30,8 +30,40 @@ class ProductController extends Controller {
 	 */
 	public function allProduct()
 	{
-		$data = Product::wsAll();
-		return $data;
+		$o = [];
+		$n = [];
+
+		$link = Product::wsAll('custom');
+		$obs = $link['link']->where($link['t1'].'.is_obsolete', '=', 1)
+			->where($link['t2'].'.active', '=', 1)
+			->orderBy($link['t1'].'.id_product', 'desc')
+			->get();
+
+		$link = Product::wsAll('custom');
+		$not_obs = $link['link']->where($link['t1'].'.is_obsolete', '=', 0)
+			->where($link['t1'].'.spicture1', '!=', 0)
+			->orderBy($link['t1'].'.id_product', 'desc')
+			->get();
+
+		if(count($obs) > 0)
+		{
+			foreach($obs as $one_obs)
+			{
+				$o[] = $one_obs->id_product;
+			}
+		}
+
+		if(count($not_obs) > 0)
+		{
+			foreach($not_obs as $one_nobs)
+			{
+				$n[] = $one_nobs->id_product;
+			}
+		}
+
+		$id = array_merge($n, $o);
+
+		return $id;
 	}
 
 	/**
