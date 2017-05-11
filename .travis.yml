@@ -16,3 +16,9 @@ before_install:
 cache:
  directories:
   - $HOME/.composer/cache
+notifications:
+ email:
+  recipients:
+   - xanaviarta@gmail.com
+  on_success:always
+  on_failure:always
