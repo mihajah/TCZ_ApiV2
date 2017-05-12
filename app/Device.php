@@ -83,10 +83,6 @@ class Device extends Model {
 				$empty = TRUE;
 				//echo 'tsis '.$field;
 			}
-			else
-			{
-				//echo $field.'<br />';
-			}
 		}
 
 		if($empty)
@@ -158,11 +154,11 @@ class Device extends Model {
 		{
 			if (!$i || $devices[$i]->group["id"] != $devices[$i-1]->group["id"]) 
 			{
-				$currentGroup = $devices[$i]->group["name"];
-				$data[$currentGroup] = [];
+				$currentGroup 			= $devices[$i]->group["name"];
+				$data[$currentGroup] 	= [];
 			} 
 
-			$data[$currentGroup][] = $devices[$i];
+			$data[$currentGroup][] 		= $devices[$i];
 		}
 
 		return $data;

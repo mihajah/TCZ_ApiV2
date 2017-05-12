@@ -60,7 +60,6 @@ class CallsController extends Controller {
 	{
 		//
 		return Call::wsAll();
-
 	}
 
 	/**

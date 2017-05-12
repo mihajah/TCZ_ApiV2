@@ -66,8 +66,8 @@ class Collection extends Model {
 			return ['success' => FALSE, 'error' => 'Only those column can be added', 'column' => $fillable];
 		}
 
-		$data = $verb->except('DefaultColors', 'unit_test');
-		$insert_id = self::add($data);
+		$data 		= $verb->except('DefaultColors', 'unit_test');
+		$insert_id 	= self::add($data);
 		foreach($verb->input('DefaultColors') as $color)
 		{
 			self::addDefaultColor($insert_id, $color);
@@ -150,7 +150,7 @@ class Collection extends Model {
 	public static function getAllId()
 	{
 		$collection = [];
-		$result = self::select('id_collection')->get();
+		$result 	= self::select('id_collection')->get();
 		if(count($result) == 0)
 		{
 			return [];
@@ -335,7 +335,7 @@ class Collection extends Model {
 		}
 
 		$data 						= [];
-		$data['id'] 		= $link->id_collection;
+		$data['id'] 				= $link->id_collection;
 		$data['name']				= $link->collection_name;
 		$data['altname']			= $link->alt_name;
 		$data['supplier']			= $link->id_supplier;

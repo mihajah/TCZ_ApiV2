@@ -820,12 +820,12 @@ class Product extends Model {
 		{
 			foreach($product_linked as $pl) 
 			{
-				$p = self::wsOne($pl->id_product, 'obj');
-				$full_data = self::remapProductAttributes($pl->id_product);
-				$p->fullproduct  = [];
-				$p->fullproduct  = $full_data;
+				$p 					= self::wsOne($pl->id_product, 'obj');
+				$full_data 			= self::remapProductAttributes($pl->id_product);
+				$p->fullproduct  	= [];
+				$p->fullproduct  	= $full_data;
 				//$p->selling_info = ['soldOnTouchiz' => $full_data->soldOnTouchiz, 'soldOnTechtablet' => $full_data->soldOnTechtablet];
-				$product_pass[]  = $p;
+				$product_pass[]  	= $p;
 			}
 		}
 		else

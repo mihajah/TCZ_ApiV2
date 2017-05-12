@@ -32,7 +32,7 @@ class Order extends Model {
 
 	public static function wsAll()
 	{
-		$id = [];
+		$id 	= [];
 		$result = self::getAllId(FALSE);
 		if(count($result) == 0)
 		{
@@ -49,8 +49,8 @@ class Order extends Model {
 
 	public static function wsForCustomer($id)
 	{
-		$fc = [];
-		$order = self::getForCustomerId($id, FALSE);
+		$fc 	= [];
+		$order 	= self::getForCustomerId($id, FALSE);
 		if(count($order) == 0)
 		{
 			return $fc;
@@ -72,7 +72,7 @@ class Order extends Model {
 	public static function wsToShip()
 	{
 		$toShip = [];
-		$id = self::getAllId();
+		$id 	= self::getAllId();
 		if(count($id) == 0)
 		{
 			return [];
