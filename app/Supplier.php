@@ -40,7 +40,7 @@ class Supplier extends Model {
 	public static function wsAll()
 	{
 		//
-		$all = [];
+		$all 	= [];
 		$result = self::all();
 		if(count($result)  == 0)
 		{

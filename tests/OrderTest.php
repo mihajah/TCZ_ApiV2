@@ -70,7 +70,7 @@ class OrderTest extends TestCase{
 
 			//orders/delivery
 			$fillable = [
-							'id_order' 		=> 2693,
+							'id_order' 		=> 117,
 							'shipping_fee'	=> 1,
 							'delivery24'	=> 1,
 							'unit_test'		=> TRUE
