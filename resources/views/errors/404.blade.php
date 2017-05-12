@@ -40,7 +40,7 @@
 	<body>
 		<div class="container">
 			<div class="content">
-				<div class="title">Page not found</div>
+				<div class="title">Content not found</div>
 				<div class="quote">Trust us! we looked everywhere :p</div>
 			</div>
 		</div>

@@ -389,6 +389,50 @@ class Prestashop
 		return $t."-".$s."-".$i;
 	}
 
+	/**
+	* used by /shoporders/{id}
+	*/
+	public static function getShopOrders($id)
+	{
+		$data 	= [];
+		$sql 	= "SELECT O.*, C.* FROM ps_orders AS O 
+					LEFT JOIN ps_customer AS C ON C.id_customer = O.id_customer 
+					WHERE O.id_order = ".$id;
+					
+		$result = DB::select($sql);
+		if(count($result) == 0)
+		{
+			return ['success' => FALSE, 'error' => 'Order not found'];
+		}
+
+		$order 					= $result[0];
+		$data['recipientEmail'] = $order->email;
+		$data['referenceId'] 	= (int) $order->id_order;
+		$data['recipientName'] 	= $order->firstname.' '.$order->lastname;
+		$data['locale'] 		= 'fr-FR';
+		$data['senderEmail'] 	= 'admin@touchiz.fr';
+		$data['senderName'] 	= 'Touchiz';
+		$data['replyTo'] 		= 'admin@touchiz.fr';
+
+		$sql 		= "SELECT * FROM ps_order_detail WHERE id_order = ".$id;
+		$products 	= DB::select($sql);
+		$cart 		= [];
+
+		foreach($products as $one)
+		{
+			$pid = (int) $one->product_id;
+			if(Product::find($pid))
+			{
+				$cart[] = ['sku' => $pid];
+			}
+		}
+
+		$data['cart'] 			= $cart;
+
+		return $data;
+
+	}
+
 
 }
 ?>

@@ -350,7 +350,7 @@ Route::group(['prefix' => 'subtypes'], function(){
 });
 
 /**
-* SubTypes route
+* Patterns route
 */
 Route::group(['prefix' => 'patterns'], function(){
 
@@ -373,4 +373,14 @@ Route::group(['prefix' => 'devicesattr'], function(){
 
 	//post, put
 	//
+});
+
+/**
+* ShopOrders route
+*/
+Route::group(['prefix' => 'shoporders'], function(){
+
+	//get
+	Route::get('/{id}', ['uses' => 'ShopOrderController@oneShopOrder'])
+	->where('id', '[0-9]+');
 });
