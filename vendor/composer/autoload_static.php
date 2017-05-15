@@ -243,6 +243,7 @@ class ComposerStaticInit1b7e59c7a79ffa054d1a9206c9869afd
     );
 
     public static $classMap = array (
+        'CreateCallsTable' => __DIR__ . '/../..' . '/database/migrations/2017_04_19_075900_create_calls_table.php',
         'CreateCollectionsTable' => __DIR__ . '/../..' . '/database/migrations/2017_03_06_110322_create_collections_table.php',
         'CreateCustomersTable' => __DIR__ . '/../..' . '/database/migrations/2017_03_08_113257_create_customers_table.php',
         'CreateDevicesTable' => __DIR__ . '/../..' . '/database/migrations/2017_03_06_093713_create_devices_table.php',
@@ -250,6 +251,7 @@ class ComposerStaticInit1b7e59c7a79ffa054d1a9206c9869afd
         'CreatePasswordResetsTable' => __DIR__ . '/../..' . '/database/migrations/2014_10_12_100000_create_password_resets_table.php',
         'CreateProductsTable' => __DIR__ . '/../..' . '/database/migrations/2017_03_06_070626_create_products_table.php',
         'CreateStocksTable' => __DIR__ . '/../..' . '/database/migrations/2017_03_08_070039_create_stocks_table.php',
+        'CreateSuppliersTable' => __DIR__ . '/../..' . '/database/migrations/2017_04_26_105538_create_suppliers_table.php',
         'CreateUsersTable' => __DIR__ . '/../..' . '/database/migrations/2014_10_12_000000_create_users_table.php',
         'DatabaseSeeder' => __DIR__ . '/../..' . '/database/seeds/DatabaseSeeder.php',
         'File_Iterator' => __DIR__ . '/..' . '/phpunit/php-file-iterator/src/Iterator.php',
