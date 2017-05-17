@@ -937,6 +937,7 @@ class Order extends Model {
 		$order['cart2']				= (isset($cart['format_two'])) ? $cart['format_two'] : $cart;
 		$order['transaction']		= 0;
 		$order['transaction_date']	= '';
+		$order['shipping_number']	= $row->shipping_number;
 
 		if($vmode == 'obj')
 			return (object) $order;

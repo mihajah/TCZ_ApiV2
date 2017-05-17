@@ -16,7 +16,7 @@ class Collection extends Model {
 	protected $table_features	= 'apb_features';
 	protected $table_color		= 'apb_colors';
 	protected $table_dc			= 'apb_collections_defaultcolor';
-	protected $fillable			= ['collection_name', 'alt_name', 'id_supplier', 'price', 'price_touchiz', 'forDeviceType', 'type',
+	protected $fillable			= ['collection_name', 'alt_name', 'id_supplier', 'id_brand', 'price', 'price_touchiz', 'forDeviceType', 'type',
 									'subtype', 'material', 'pattern', 'feature1', 'feature2', 'feature3', 'feature4', 'feature5',
 									'classic', 'DefaultColors'];
 
@@ -32,8 +32,8 @@ class Collection extends Model {
 
 	public static function wsAll()
 	{
-		$all = [];
-		$collectionId = self::getAllId();
+		$all 			= [];
+		$collectionId 	= self::getAllId();
 		foreach($collectionId as $one)
 		{
 			$all[] = self::wsOne($one);
