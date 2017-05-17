@@ -350,6 +350,7 @@ class Collection extends Model {
 		$data['classic']			= ['id' => $link->classic, 'display' => ($link->classic) ? 'Yes' : 'No'];
 		$data['defaultColor']		= self::getDefaultColor($id, 'assignement');
 		$data['temp_picture']		= self::getTmpPicture($id);
+		$data['brand']				= $link->id_brand;
 
 		if($vmode == 'obj')
 			return (object) $data;

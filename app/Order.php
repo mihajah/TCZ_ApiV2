@@ -380,6 +380,11 @@ class Order extends Model {
 			DB::table(self::getProp('table').($staging?"_staging":""))->where('id_reseller_order', '=', $order)->update($data);
 		}
 
+		if($verb->has('shipping_number') && $verb->input('shipping_number') != '')
+		{
+			DB::table(self::getProp('table'))->where('id_reseller_order', '=', $order)->update(['shipping_number' => $verb->input('shipping_number')]);
+		}
+
 		self::goToNextStep($order);
 		//notif
 			$content['subject'] 	= "Commande Techtablet ".$order." expédiée";
@@ -392,14 +397,14 @@ class Order extends Model {
 
 			if(!$verb->has('unit_test'))
 			{
-				Mail::send([], [], function($message) use ($content)
+				/*Mail::send([], [], function($message) use ($content)
 				{
 					$message->from('info-techtablet@techtablet.fr', 'Techtablet');
 				   // $message->to('xanaviarta@gmail.com', 'Mihaja')->subject($content['subject'])
 				   // ->setBody(GF::mailShipping($content['name'], $content['reference'], $content['lien'], $content['num_suivi']), 'text/html'); //debug
 				    $message->to($content['mail'], $content['name'])->subject($content['subject'])
 				    ->setBody(GF::mailShippingHtmlBody($content['name'], $content['reference'], $content['lien'], $content['num_suivi']), 'text/html');		    
-				});
+				});*/
 			}			
 		//---
 
