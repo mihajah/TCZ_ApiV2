@@ -433,7 +433,10 @@ class Customer extends Model {
 									  ];
 		$data['notes']				= urldecode($db->notes);
 		$data['newsletter']			= ($db->newsletter == 1) ? ['value' => $db->newsletter, 'send' => 'yes'] : ['value' => $db->newsletter, 'send' => 'no'];
-		
+		$data['last_order_value']	= $db->last_order_value;
+		$data['cart_amount']		= $db->cart_amount;
+		$data['last_calldate']		= $db->last_calldate;
+
 		if($vmode == 'obj')
 			return (object) $data;
 

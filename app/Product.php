@@ -298,7 +298,7 @@ class Product extends Model {
 
 		$use_id   = ['brand', 'collection', 'type', 'subtype', 'color', 'pattern', 'material'];
 		//If you wanna add another column make sure that there's a method for that at PB::product() and/or Product class
-		$editable = ['id_product', 'name', 'suppliername', 'brand', 'supplier', 'type', 'subtype', 'pattern', 'collection', 'color', 'material', 'price_reseller', 'price', 'fordevice'];
+		$editable = ['id_product', 'active', 'name', 'suppliername', 'brand', 'supplier', 'type', 'subtype', 'pattern', 'collection', 'color', 'material', 'price_reseller', 'price', 'fordevice'];
 		//you can add another column only if there's a SET option for your column at PB::product($id, 'set_column') 
 		$other    = ['fordevice'];
 		$error 	  = [];
