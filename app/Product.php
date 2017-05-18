@@ -110,7 +110,7 @@ class Product extends Model {
 
 	public static function wsAmazone($id)
 	{
-		$data = [];
+		$data  = [];
 		
 		$field = [
 					'id',
@@ -331,8 +331,7 @@ class Product extends Model {
 				{
 					$data[$k] = $v;
 					$error = PS::updateProduct($all['id_product'], $data);
-				}
-					
+				}					
 			}
 		}
 

@@ -174,25 +174,44 @@ class Customer extends Model {
 						'to_callback',
 						'status',
 						'newsletter',
-						'notes'
+						'notes',
+						'franchise',
+						'firstnamef',
+						'lastnamef',
+						'name',
+						'stock_software',
+						'first_order',
+						'firstname',
+						'lastname',
+						'adresse',
+						'adressef',
+						'payment_mode'
 			    	];
 
-		if(count($needed) != count($editable))
+		if(count($all) < 2)
 		{
-			return ['success' => FALSE, 'error' => 'Only those column can be edited', 'column' => $editable];
+			return ['success' => FALSE, 'error' => 'At least, you must provide 2 editable field', 'possible field' => $editable];
 		}
 
-		foreach($editable as $field)
+		foreach($needed as $k => $v)
 		{
-			if(!$verb->has($field))
+			if($k != 'id_customer')
 			{
-				$fail = TRUE;
-			}
+				if(!in_array($k, $editable))
+				{
+					$fail = TRUE;
+				}
+
+				if($verb->input($k) == '')
+				{
+					$fail = TRUE;
+				}
+			}				
 		}
 
 		if($fail)
 		{
-			return ['success' => FALSE, 'error' => 'Only those column can be edited', 'column' => $editable];
+			return ['success' => FALSE, 'error' => 'Only those column can be edited, and must filled', 'column' => $editable];
 		}
 
 
