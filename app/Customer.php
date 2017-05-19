@@ -190,7 +190,8 @@ class Customer extends Model {
 						'phone1',
 						'last_order',
 						'arevage_ordervalue',
-						'cart_amount'
+						'cart_amount',
+						'siret'
 			    	];
 
 		if(count($all) < 2)
