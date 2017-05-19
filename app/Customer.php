@@ -185,7 +185,12 @@ class Customer extends Model {
 						'lastname',
 						'adresse',
 						'adressef',
-						'payment_mode'
+						'payment_mode',
+						'adresse_ville',
+						'phone1',
+						'last_order',
+						'arevage_ordervalue',
+						'cart_amount'
 			    	];
 
 		if(count($all) < 2)
