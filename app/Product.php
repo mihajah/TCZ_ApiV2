@@ -416,6 +416,23 @@ class Product extends Model {
 		return self::find($product)->linkCollection($map);
 	}
 
+	public static function getActifProduct()
+	{
+		$model 	= self::linkPSProduct(TRUE);
+		$actif 	= $model['link']->select($model['t1'].'.id_product')
+		->where($model['t2'].'.active', '=', 1)
+		->distinct()
+		->get();
+
+		return $actif;
+	}
+
+	public static function getAvailableProduct()
+	{
+		$model     = self::linkPSProduct(TRUE);
+		$available = '';
+	}
+
 	/**
 	* Internal method
 	*/
