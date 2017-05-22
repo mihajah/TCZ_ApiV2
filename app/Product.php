@@ -430,7 +430,13 @@ class Product extends Model {
 	public static function getAvailableProduct()
 	{
 		$model     = self::linkPSProduct(TRUE);
-		$available = '';
+		$available = $model['link']->select($model['t1'].'.id_product')
+		->where($model['t1'].'.is_obsolete', '=', 0)
+		->where($model['t2'].'.active', '=', 1)
+		->distinct()
+		->get();
+
+		return $available;
 	}
 
 	/**

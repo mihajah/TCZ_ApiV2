@@ -384,15 +384,3 @@ Route::group(['prefix' => 'shoporders'], function(){
 	Route::get('/{id}', ['uses' => 'ShopOrderController@oneShopOrder'])
 	->where('id', '[0-9]+');
 });
-
-
-Route::get('/testc', function(){
-	$data  = [];
-	$actif =  \App\Product::getActifProduct();
-	foreach($actif as $one)
-	{
-		$data[] = $one->id_product;
-	}
-
-	return $data;
-});

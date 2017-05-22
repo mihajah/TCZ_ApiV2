@@ -188,9 +188,6 @@ class Customer extends Model {
 						'payment_mode',
 						'adresse_ville',
 						'phone1',
-						'last_order',
-						'arevage_ordervalue',
-						'cart_amount',
 						'siret'
 			    	];
 
