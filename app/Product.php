@@ -416,6 +416,11 @@ class Product extends Model {
 		return self::find($product)->linkCollection($map);
 	}
 
+	public static function allProducts()
+	{
+		return GF::getAllProductsWithFilter();
+	}
+
 	public static function getActifProduct()
 	{
 		$model 	= self::linkPSProduct(TRUE);
@@ -696,7 +701,7 @@ class Product extends Model {
 			$data['price_reseller'] 		= $price_reseller['value'];
 
 		if(in_array('forbrand', $display))
-			$data['forbrand'] 				= PB::product($data['fordevice']['id'], 'forbrand');
+			$data['forbrand'] 				= PB::product($data['fordevice'], 'forbrand');
 
 		if(in_array('pictures', $display))
 			$data['pictures'] 				= PB::product(['id' => $id, 'type' => 'thumb'], 'cover');

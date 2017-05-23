@@ -187,7 +187,14 @@ class Customer extends Model {
 						'adressef',
 						'payment_mode',
 						'adresse_ville',
+						'adressef_ville',
 						'phone1',
+						'email',
+						'adresse_pays',
+						'adresse_pc',
+						'adressef_pays',
+						'adressef_pc',
+						'named',
 						'siret'
 			    	];
 

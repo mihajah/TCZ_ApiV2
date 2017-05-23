@@ -53,8 +53,6 @@ class Prestabot
 		{
 			$forBrand = [];
 			$device   = $id;
-			$temp     = [];
-
 			foreach($device as $dv)
 			{
 				if(Device::find($dv['id']))
@@ -65,21 +63,16 @@ class Prestabot
 					$results = DB::select($sql, ['value' => $brand_id]);
 					if(count($results) > 0)
 					{
-						$temp[$brand_id] = $results[0]->value;
+						$forBrand[] = ['id' => $brand_id, 'name' => $results[0]->value];
 					}
 				}						
 			}
 
-			if(empty($temp))
+			if(count($forBrand) == 0)
 			{
 				return ['id' => '', 'name' => ''];
 			}
-
-			foreach($temp as $k => $v)
-			{
-				$forBrand[] = ['id' => $k, 'name' => $v];
-			}
-
+			
 			return $forBrand;
 		}
 

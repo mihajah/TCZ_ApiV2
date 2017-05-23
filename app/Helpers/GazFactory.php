@@ -509,7 +509,7 @@ class GazFactory
 
 						// Now build the filters array
 						$fstring = "(".$dbmatch[$key]." = '".trim($flist[0])."' ";
-						for($i = 1; $i < count($flist); $i++) 
+						for($i = 1; $i < count($flist); ++$i) 
 						{
 							$fstring = $fstring." OR ".$dbmatch[$key]." = '".trim($flist[$i])."' ";
 						}
@@ -622,15 +622,15 @@ class GazFactory
 		$n 				= 0;
 		$products 		= [];
 		$products[$n] 	= $res[0]->id_product;
-		$n++;
+		++$n;
 
-		for($i = 1; $i < count($res); $i++) 
+		for($i = 1; $i < count($res); ++$i) 
 		{
 			//if ($res[$i]['name']
 			if ($products[$n-1] != $res[$i]->id_product) 
 			{
 				$products[$n] = $res[$i]->id_product;
-				$n++;
+				++$n;
 			}
 		}
 
