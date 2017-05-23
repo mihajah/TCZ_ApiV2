@@ -369,22 +369,6 @@ class Prestabot
 		}
 	}
 
-	/**
-	* Order
-	*/
-	/*public static function getResellerOrdersID($staging = FALSE)
-	{
-		$order = [];
-		$sql = "SELECT O.id_reseller_order FROM apb_reseller_orders".($staging?"_staging":"")." AS O ORDER BY O.id_reseller_order DESC";
-		$result = DB::select($sql);
-		if(count($result) > 0)
-		{
-
-			return
-		}
-
-		return $order;
-	} */
 
 	/**
 	* Other
@@ -548,7 +532,7 @@ class Prestabot
 			return ['display' => '', 'value' => ''];
 		}
 		
-		$str = '';
+		$str  = '';
 		$str2 = '';
 
 		for($i=0; $i<count($results); $i++) 
