@@ -72,7 +72,8 @@ class Prestabot
 
 			if(empty($temp))
 			{
-				return ['id' => '', 'name' => ''];
+				$forBrand[] = ['id' => '', 'name' => ''];
+				return $forBrand;
 			}
 
 			foreach($temp as $k => $v)

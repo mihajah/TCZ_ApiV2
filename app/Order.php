@@ -93,6 +93,12 @@ class Order extends Model {
 	public static function wsWithEan($id)
 	{
 		$order = self::getFullSchema($id, FALSE);
+		
+		if(!isset($order['cart']))
+		{
+			return ['success' => FALSE, 'error' => 'Cart not found'];
+		}
+
 		if(count($order['cart']) == 0)
 		{
 			return ['success' => FALSE];
@@ -106,11 +112,20 @@ class Order extends Model {
 			foreach($cart as $k => $v)
 			{
 				$product 		= Product::wsOne($k, 'obj');
-				$product_list[] = ['id' => $product->id];
+				$product_list[] = ['id' => $product];
 				for($i=0; $i<$v; $i++)
 				{
-					$str .= $product->forbrand['name']." ".$product->fordevice['name']." ".$product->subtype['name'];
-					$str .= " ".$product->fordevice['name']." ".$product->color['name']." (".$product->box.");";
+					if(isset($product->fordevice[0]))
+					{
+						$fd = $product->fordevice[0]['name'];
+					}
+					else
+					{
+						$fd = '';
+					}
+
+					$str .= $product->forbrand[0]['name']." ".$fd." ".$product->subtype['name'];
+					$str .= " ".$fd." ".$product->color['name']." (".$product->box.");";
 					$str .= $product->ean."\r\n";
 				}
 			}
