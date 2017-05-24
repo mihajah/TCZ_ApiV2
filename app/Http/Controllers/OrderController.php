@@ -216,9 +216,24 @@ class OrderController extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function update($id)
+	public function updateToShip(Request $verb)
 	{
 		//
+		if(!$verb->has('id') || !$verb->has('shipping_mode'))
+		{
+			return ['success' => FALSE, 'error' => 'You must provide id, shipping_mode'];
+		}
+
+		$id                    = $verb->input('id');
+		$data['shipping_mode'] = $verb->input('shipping_mode');
+
+		if(!Order::find($id))
+		{
+			return ['success' => FALSE, 'error' => 'Order not found'];
+		}
+
+		Order::where('id_reseller_order', '=', $id)->update($data);
+		return ['success' => TRUE, 'data' => Order::wsOne($id)];
 	}
 
 	/**

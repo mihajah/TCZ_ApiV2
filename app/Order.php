@@ -93,7 +93,7 @@ class Order extends Model {
 	public static function wsWithEan($id)
 	{
 		$order = self::getFullSchema($id, FALSE);
-		
+
 		if(!isset($order['cart']))
 		{
 			return ['success' => FALSE, 'error' => 'Cart not found'];
@@ -958,6 +958,7 @@ class Order extends Model {
 		$order['transaction']		= 0;
 		$order['transaction_date']	= '';
 		$order['shipping_number']	= $row->shipping_number;
+		$order['shipping_mode']		= $row->shipping_mode;
 
 		if($vmode == 'obj')
 			return (object) $order;
