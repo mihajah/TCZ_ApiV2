@@ -23,6 +23,7 @@
         <env name="DB_DATABASE" value="touchiz"/>
         <env name="DB_USERNAME" value="root"/>
         <env name="DB_PASSWORD" value=""/>
+        <env name="COMPOSER_DISABLE_XDEBUG_WARN" value="1"/> 
         <server name="SERVER_NAME" value="staging.touchiz.fr"/>
     </php>
 </phpunit>
