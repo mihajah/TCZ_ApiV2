@@ -236,6 +236,41 @@ class OrderController extends Controller {
 		return ['success' => TRUE, 'data' => Order::wsOne($id)];
 	}
 
+	public function updateChronopost(Request $verb)
+	{
+		//
+		if(!$verb->has('id'))
+		{
+			return ['success' => FALSE, 'error' => 'You must provide id'];
+		}
+
+		$fail     = FALSE;
+		$order    = $verb->input('id');
+		$data     = $verb->except('id');
+		$editable = ['poids', 'largeur', 'longueur', 'hauteur'];
+
+		foreach($editable as $key)
+		{
+			if(!$verb->has($key))
+			{
+				$fail = TRUE;
+			}
+
+			if($verb->input($key) === '')
+			{
+				$fail = TRUE;
+			}
+		}
+
+		if($fail)
+		{
+			return ['success' => FALSE, 'error' => 'You must provide required field with valid value', 'required field' => $editable];
+		}
+
+		Order::where('id_reseller_order', '=', $order)->update($data);
+		return ['success' => TRUE, 'data' => Order::wsOne($order)];
+	}
+
 	/**
 	 * Remove the specified resource from storage.
 	 *

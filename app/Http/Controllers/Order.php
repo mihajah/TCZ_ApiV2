@@ -905,9 +905,10 @@ class Order extends Model {
 
 	public static function getCart($id, $staging = FALSE)
 	{
-		$cart = [];
-		$sql = "SELECT * FROM ".self::getProp('order_apb_table').($staging?"_staging":"")." WHERE `id_reseller_order`= ".$id;
+		$cart   = [];
+		$sql    = "SELECT * FROM ".self::getProp('order_apb_table').($staging?"_staging":"")." WHERE `id_reseller_order`= ".$id;
 		$result = DB::select($sql);
+		
 		if(count($result) == 0)
 		{
 			return $cart;

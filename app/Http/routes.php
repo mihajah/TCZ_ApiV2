@@ -221,6 +221,8 @@ Route::group(['prefix' => 'orders'], function(){
 	Route::post('/rollback', ['uses' => 'OrderController@storeRollBack']);
 
 	Route::put('/toShip', ['uses' => 'OrderController@updateToShip']);
+
+	Route::put('/chronopost', ['uses' => 'OrderController@updateChronopost']);
 });
 
 /**
