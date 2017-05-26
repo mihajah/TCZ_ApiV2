@@ -212,7 +212,7 @@ class Customer extends Model {
 					$fail = TRUE;
 				}
 
-				if($verb->input($k) == '')
+				if($verb->input($k) === '')
 				{
 					$fail = TRUE;
 				}

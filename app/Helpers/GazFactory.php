@@ -626,7 +626,6 @@ class GazFactory
 
 		for($i = 1; $i < count($res); ++$i) 
 		{
-			//if ($res[$i]['name']
 			if ($products[$n-1] != $res[$i]->id_product) 
 			{
 				$products[$n] = $res[$i]->id_product;
