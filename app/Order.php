@@ -502,7 +502,7 @@ class Order extends Model {
 		$totalAdded 		= 0;
 		foreach($cart as $k => $v)
 		{
-			$nAdded = self::validateProductInCart(intval($k), $v);
+			$nAdded      = self::validateProductInCart(intval($k), $v);
 			$totalAdded += $nAdded;
 
 			if($nAdded < $v)
@@ -583,7 +583,7 @@ class Order extends Model {
 	public static function resetCart($id, $staging = FALSE)
 	{
 		$oldCart = [];
-		$result = DB::table(self::getProp('order_apb_table').($staging?"_staging":""))->where('id_reseller_order', '=', $id)->get();
+		$result  = DB::table(self::getProp('order_apb_table').($staging?"_staging":""))->where('id_reseller_order', '=', $id)->get();
 		if(count($result) == 0)
 		{
 			return $oldCart;
@@ -905,9 +905,10 @@ class Order extends Model {
 
 	public static function getCart($id, $staging = FALSE)
 	{
-		$cart = [];
-		$sql = "SELECT * FROM ".self::getProp('order_apb_table').($staging?"_staging":"")." WHERE `id_reseller_order`= ".$id;
+		$cart   = [];
+		$sql    = "SELECT * FROM ".self::getProp('order_apb_table').($staging?"_staging":"")." WHERE `id_reseller_order`= ".$id;
 		$result = DB::select($sql);
+		
 		if(count($result) == 0)
 		{
 			return $cart;

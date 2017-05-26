@@ -63,7 +63,7 @@ class Call extends Model {
 
 	public static function wsByCustomer($id)
 	{
-		$call = [];
+		$call   = [];
 		$result = self::where('id_customer', '=', $id)->get();
 		if(count($result) > 0)
 		{
@@ -85,7 +85,7 @@ class Call extends Model {
 
 	public static function wsLastCall($id)
 	{
-		$last = [];
+		$last   = [];
 		$result = self::where('id_customer', '=', $id)->orderBy('date', 'desc')->first();
 		if(count($result) > 0)
 		{
@@ -105,7 +105,7 @@ class Call extends Model {
 	public static function wsAdd($verb)
 	{
 		$fail = FALSE;
-		$all = $verb->except('unit_test', 'status');
+		$all  = $verb->except('unit_test', 'status');
 		$fillable = [
 						'id_customer',
 						'note',
@@ -149,7 +149,7 @@ class Call extends Model {
 	public static function wsEdit($verb)
 	{
 		$fail = FALSE;
-		$all = $verb->only('note', 'date');
+		$all  = $verb->only('note', 'date');
 		if(!self::find($verb->input('id')))
 		{
 			return ['success' => FALSE, 'error' => 'Call not found'];
