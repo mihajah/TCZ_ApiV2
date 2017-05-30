@@ -216,7 +216,7 @@ class Stock extends Model {
 				$index = $arr_tmp_index[0];
 				if(count($arr_tmp[$index]) > 0)
 				{
-					$length = count($arr_tmp[$index]);
+					$length     = count($arr_tmp[$index]);
 					$last_stock = $arr_tmp[$index][$length - 1];
 					return $last_stock['data']['qty_real'];
 				}
@@ -376,8 +376,9 @@ class Stock extends Model {
 	{
 		$table_one = self::getProp('table');
 		$table_two = self::getProp('table_fordevice');
-		$link = self::join($table_two, $table_one.'.id_product', '=', $table_two.'.id_product');
-		$data = ['link' => $link, 't1' => $table_one, 't2' => $table_two];
+		$link      = self::join($table_two, $table_one.'.id_product', '=', $table_two.'.id_product');
+		$data      = ['link' => $link, 't1' => $table_one, 't2' => $table_two];
+
 		return $data;
 	}
 
@@ -396,8 +397,7 @@ class Stock extends Model {
 		$rc 	= 'apb_reseller_carts';
 		$po 	= 'ps_orders';
 		$pcp 	= 'ps_cart_product';
-
-		$real = 0;
+		$real   = 0;
 
 		$result = DB::table($ro)->join($rc, $ro.'.id_reseller_order', '=', $rc.'.id_reseller_order')
 		->select($rc.'.quantity AS QT')
@@ -432,7 +432,7 @@ class Stock extends Model {
 
 	protected static function getAvailable($product)
 	{
-		$stock = 0;
+		$stock   = 0;
 		$results = self::where('id_product', '=', $product)->get();
 		if($results->count() > 0)
 		{
