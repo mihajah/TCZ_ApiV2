@@ -3,7 +3,6 @@ php:
   - '5.4'
   - '5.5'
   #- hhvm no longer supported on Debian dist
-  #- nightly
 script:
   - phpunit --debug
 services:
