@@ -145,7 +145,7 @@ class Order extends Model {
 		$fresh = self::newROFC($id_customer);	
 		if($verb->has('unit_test'))
 		{
-			self::destroy($fresh['id_reseller_order']);
+			self::destroy($fresh['id']);
 		}	
 
 		return $fresh;

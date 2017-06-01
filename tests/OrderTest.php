@@ -40,7 +40,7 @@ class OrderTest extends TestCase{
 		{
 			//orders
 			$fillable = [
-							'id_customer' 	=> 8,
+							'id_customer' 	=> 17,
 							'unit_test'		=> TRUE
 						];
 
