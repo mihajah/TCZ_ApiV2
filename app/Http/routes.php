@@ -223,6 +223,8 @@ Route::group(['prefix' => 'orders'], function(){
 	Route::put('/toShip', ['uses' => 'OrderController@updateToShip']);
 
 	Route::put('/chronopost', ['uses' => 'OrderController@updateChronopost']);
+
+	Route::put('/totalcart', ['uses' => 'OrderController@updateTotalCart']);
 });
 
 /**

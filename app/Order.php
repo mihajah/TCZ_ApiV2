@@ -961,7 +961,7 @@ class Order extends Model {
 		$order['shipping_number']	= $row->shipping_number;
 		$order['shipping_mode']		= $row->shipping_mode;
 		$order['chronopost']        = ['package' => ['width' => $row->longueur, 'height' => $row->largeur, 'depth' => $row->hauteur, 'weight' => $row->poids]];
-
+		$order['total_cart']        = $row->total_cart;
 		if($vmode == 'obj')
 			return (object) $order;
 
