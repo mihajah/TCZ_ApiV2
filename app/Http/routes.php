@@ -390,3 +390,25 @@ Route::group(['prefix' => 'shoporders'], function(){
 	Route::get('/{id}', ['uses' => 'ShopOrderController@oneShopOrder'])
 	->where('id', '[0-9]+');
 });
+
+
+/**
+* Reliquats
+*/
+Route::group(['prefix' => 'reliquats'], function(){
+
+	//get
+	Route::get('/', ['uses' => 'ReliquatController@allReliquat']);
+
+	Route::get('/{id}', ['uses' => 'ReliquatController@oneReliquat'])
+	->where('id', '[0-9]+');
+
+	Route::get('/customer/{id}', ['uses' => 'ReliquatController@byCustomer'])
+	->where('id', '[0-9]+');
+
+	Route::get('/order/{id}', ['uses' => 'ReliquatController@byOrder'])
+	->where('id', '[0-9]+');
+
+	//post, put
+	Route::post('/', ['uses' => 'ReliquatController@store']);
+});
