@@ -276,7 +276,7 @@ class Collection extends Model {
 
 	public static function getTmpPicture($id)
 	{
-		$result = [];
+		$result     = [];
 		$colorLists = self::getDefaultColor($id);
 		foreach($colorLists as $color)
 		{
