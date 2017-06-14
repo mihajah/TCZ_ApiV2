@@ -133,10 +133,17 @@ class OrderController extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function oneOrder($id)
+	public function oneOrder($id, Request $verb)
 	{
 		//
-		return Order::wsOne($id);
+		$column = '';
+
+		if($verb->has('column') && $verb->input('column') != '')
+		{
+			$column = $verb->input('column');
+		}
+
+		return Order::wsOne($id, $column);
 	}
 
 	/**
@@ -275,6 +282,26 @@ class OrderController extends Controller {
 		if(Order::find($order)->delivery24 == 0)
 		{
 			return ['success' => FALSE, 'error' => 'Request only work with delivery24 > 0'];
+		}
+
+		Order::where('id_reseller_order', '=', $order)->update($data); //
+		return ['success' => TRUE, 'data' => Order::wsOne($order)]; //
+	}
+
+	public function updateTotalCart(Request $verb)
+	{
+		//
+		if(!$verb->has('id') || !$verb->has('total_cart'))
+		{
+			return ['success' => FALSE, 'error' => 'You must provide id, total_cart'];
+		}
+
+		$order              = $verb->input('id');
+		$data['total_cart'] = $verb->input('total_cart');
+
+		if(!Order::find($order))
+		{
+			return ['success' => FALSE, 'error' => 'Order not found'];
 		}
 
 		Order::where('id_reseller_order', '=', $order)->update($data);

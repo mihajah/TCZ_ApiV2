@@ -19,14 +19,21 @@ class Order extends Model {
 	protected $order_ps_cart_table 	= 'ps_cart_product';
 	protected $customer_table		= 'apb_customers';
 	protected $table_tmp_cart		= 'apb_reseller_tmp_carts';
+	public static $showable         = '';
 
 	use ModelGetProperties;
 
 	/**
 	* ws Method
 	*/
-	public static function wsOne($id)
+	public static function wsOne($id, $column = '')
 	{
+		//	
+		if($column)
+		{
+			self::setColumn($column);
+		}
+
 		return self::getFullSchema($id, FALSE);
 	}
 
@@ -263,13 +270,13 @@ class Order extends Model {
 
 			if(!$verb->has('unit_test'))
 			{
-				Mail::send(['html' => 'emails.orderSubmit'], ['mail_content' => $content], function($message) use ($content)
+				/*Mail::send(['html' => 'emails.orderSubmit'], ['mail_content' => $content], function($message) use ($content)
 				{
 					$message->from('info-techtablet@techtablet.fr', 'Techtablet');
 				    //$message->to('xanaviarta@gmail.com', 'Mihaja')->subject($content['subject']); //debug
 				    $message->to('steve.queroub@gmail.com', 'Steve')->subject($content['subject']);
 				    $message->to('anne-sophie@techtablet.fr', 'Sophie')->subject($content['subject']);		    
-				});
+				});*/
 			}			
 		//--
 
@@ -923,12 +930,24 @@ class Order extends Model {
 		return $cart;
 	}
 
+
+	public static function setColumn($raw)
+	{
+		if($raw)
+		{
+			$selected       = explode(',', $raw);
+			self::$showable = $selected;
+		}
+	}
+
 	/**
 	* Internal Method
 	*/
 	protected static function remapOrderAttributes($id, $staging = FALSE, $vmode = 'obj')
 	{
-		$order = [];
+		$order    = [];
+		$selected = self::$showable;
+
 		$sql = "SELECT O.*,C.name AS customer_name FROM ".self::getProp('table').($staging?"_staging":"")." as O
 				LEFT JOIN ".self::getProp('customer_table')." AS C ON C.id_customer = O.id_customer  
 				WHERE id_reseller_order = ".$id;
@@ -938,6 +957,21 @@ class Order extends Model {
 		if(count($result) == 0)
 		{
 			return $order;
+		}
+
+		if(!is_array($selected))
+		{
+			$selected = [
+				           'fake',
+				           'cart',
+				           'cart2',
+				           'transaction',
+				           'transaction_date',
+				           'shipping_number',
+				           'shipping_mode',
+				           'chronopost',
+				           'total_cart'
+			            ];
 		}
 
 		$row = $result[0];
@@ -952,15 +986,44 @@ class Order extends Model {
 		$order['delivery24']		= $row->delivery24;
 		$order['payment_method']	= $row->payment_method;
 		$order['lastupdate_date']	= $row->lastupdate_date;
-		$order['fake']				= $staging;
-		$cart 						= self::getCart($row->id_reseller_order);
-		$order['cart']				= (isset($cart['format_one'])) ? $cart['format_one'] : $cart;
-		$order['cart2']				= (isset($cart['format_two'])) ? $cart['format_two'] : $cart;
-		$order['transaction']		= 0;
-		$order['transaction_date']	= '';
-		$order['shipping_number']	= $row->shipping_number;
-		$order['shipping_mode']		= $row->shipping_mode;
-		$order['chronopost']        = ['package' => ['width' => $row->longueur, 'height' => $row->largeur, 'depth' => $row->hauteur, 'weight' => $row->poids]];
+
+		if(in_array('fake', $selected))
+			$order['fake']				= $staging;
+
+		if(in_array('cart', $selected))
+		{
+			$cart 						= self::getCart($row->id_reseller_order);
+			$order['cart']				= (isset($cart['format_one'])) ? $cart['format_one'] : $cart;	
+		}			
+		
+		if(in_array('cart2', $selected))
+		{
+			if(!isset($order['cart']))
+			{
+				$cart = self::getCart($row->id_reseller_order);
+			}
+
+			$order['cart2']				= (isset($cart['format_two'])) ? $cart['format_two'] : $cart;
+		}
+			
+		if(in_array('transaction', $selected))
+			$order['transaction']		= 0;
+
+		if(in_array('transaction_date', $selected))
+			$order['transaction_date']	= '';
+
+		if(in_array('shipping_number', $selected))
+			$order['shipping_number']	= $row->shipping_number;
+
+		if(in_array('shipping_mode', $selected))
+			$order['shipping_mode']		= $row->shipping_mode;
+
+		if(in_array('chronopost', $selected))
+			$order['chronopost']        = ['package' => ['width' => $row->longueur, 'height' => $row->largeur, 'depth' => $row->hauteur, 'weight' => $row->poids]];
+		
+		if(in_array('total_cart', $selected))
+			$order['total_cart']        = $row->total_cart;
+
 
 		if($vmode == 'obj')
 			return (object) $order;

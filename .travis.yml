@@ -2,8 +2,7 @@ language: php
 php:
   - '5.4'
   - '5.5'
-  - hhvm
-  #- nightly
+  #- hhvm no longer supported on Debian dist
 script:
   - phpunit --debug
 services:

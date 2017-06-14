@@ -1,6 +1,9 @@
 <?php
 namespace App\Helpers;
 use DB;
+use App\Helpers\Prestabot as PB;
+use App\Device;
+use App\Helpers\Stat;
 
 class Stat
 {
@@ -63,6 +66,80 @@ class Stat
 
 			$final = [$device => $stat];
 			return $final;		
+	}
+
+	/**
+	* Public method
+	*/
+
+	/**
+	* @param string $shop (touchiz|techtablet)
+	* @param int    $period (1|3|12)
+	*/
+	public static function getDeviceSales($shop, $period = 1)
+	{
+		$list = '';
+
+		if($shop == 'touchiz')
+		{
+			//sql
+			/*SELECT sum(CP.quantity) AS QTY, CP.id_product FROM  `ps_cart_product` AS CP INNER JOIN  `ps_orders` AS O ON O.id_cart = CP.id_cart INNER JOIN ps_product AS PP ON PP.id_product = CP.id_product INNER JOIN apb_prd_fordevice AS FD ON FD.id_product = CP.id_product INNER JOIN apb_devices AS D ON D.id_device = FD.id_device WHERE O.id_order >0 AND FD.id_device= 586 AND O.date_add> ( CURRENT_DATE - INTERVAL 1 
+MONTH ) and O.date_add != '0000-00-00 00:00:00' AND PP.active = 1*/
+		}
+		
+		if($shop == 'techtablet')
+		{
+			//
+			$sql = "SELECT D.name, SUM((CASE WHEN PRD.price_reseller > 0 THEN ROUND(PRD.price_reseller, 2) ELSE ROUND(CO.price, 2) END) * C.quantity) AS CA, DVV.value as brand
+					FROM  `apb_reseller_carts` AS C
+					INNER JOIN  `apb_reseller_orders` AS O ON O.id_reseller_order = C.id_reseller_order
+					INNER JOIN apb_prd AS PRD ON PRD.id_product = C.id_product
+					INNER JOIN apb_prd_fordevice AS FD ON FD.id_product = C.id_product
+					INNER JOIN ps_product_lang AS PSL ON PSL.id_product = C.id_product
+					INNER JOIN apb_collections AS CO ON CO.id_collection = PRD.id_collection
+					INNER JOIN apb_devices AS D ON D.id_device = FD.id_device
+					INNER JOIN apb_devices_values AS DVV ON DVV.id_value = D.brand
+					WHERE O.status > 1
+					AND C.id_reseller_order > 0
+					AND billing_date !=  '0000-00-00 00:00:00'
+					AND billing_date > ( CURRENT_DATE - INTERVAL 1 MONTH ) 
+					AND PRD.is_obsolete = 0
+					GROUP BY D.id_device
+					ORDER BY CA DESC
+					LIMIT 0, 30
+				"; 
+
+			$list = DB::select($sql);
+
+		}
+		
+		return $list;
+	}
+
+	/**
+	* @param
+	*/
+	public static function prepareSalesData($shop, $period = 1)
+	{
+		$deviceSales = self::getDeviceSales($shop, $period);
+		$data        = [];
+		
+
+		if(empty($deviceSales))
+		{	
+			return [];
+		}
+
+		foreach($deviceSales as $one)
+		{			
+			$data[]    = [
+							'ca'     => $one->CA, 
+							'device' => $one->name, 
+							'brand'  => $one->brand							
+					     ];
+		}
+
+		return $data;
 	}
 
 	/**
