@@ -1,4 +1,8 @@
 <?php 
+/*
+* including this file will let you to use apiv2 full functionalities outside laravel
+*/
+
 //conf
 $debug = TRUE;
 
