@@ -90,26 +90,25 @@ MONTH ) and O.date_add != '0000-00-00 00:00:00' AND PP.active = 1*/
 		if($shop == 'techtablet')
 		{
 			//
-			$sql = "SELECT D.name, SUM((CASE WHEN PRD.price_reseller > 0 THEN ROUND(PRD.price_reseller, 2) ELSE ROUND(CO.price, 2) END) * C.quantity) AS CA, DVV.value as brand
+			$sql = "SELECT sum(C.quantity) AS QTY,D.name, D.id_device, C.id_product
 					FROM  `apb_reseller_carts` AS C
 					INNER JOIN  `apb_reseller_orders` AS O ON O.id_reseller_order = C.id_reseller_order
 					INNER JOIN apb_prd AS PRD ON PRD.id_product = C.id_product
 					INNER JOIN apb_prd_fordevice AS FD ON FD.id_product = C.id_product
-					INNER JOIN ps_product_lang AS PSL ON PSL.id_product = C.id_product
-					INNER JOIN apb_collections AS CO ON CO.id_collection = PRD.id_collection
 					INNER JOIN apb_devices AS D ON D.id_device = FD.id_device
-					INNER JOIN apb_devices_values AS DVV ON DVV.id_value = D.brand
+					INNER JOIN ps_product_lang AS PSL ON PSL.id_product = C.id_product
 					WHERE O.status > 1
 					AND C.id_reseller_order > 0
 					AND billing_date !=  '0000-00-00 00:00:00'
-					AND billing_date > ( CURRENT_DATE - INTERVAL 1 MONTH ) 
+					AND billing_date > ( CURRENT_DATE - INTERVAL 1 MONTH ) 	
 					AND PRD.is_obsolete = 0
-					GROUP BY D.id_device
-					ORDER BY CA DESC
-					LIMIT 0, 30
+					group by D.id_device
+					ORDER BY QTY DESC
+					LIMIT 0 , 30
 				"; 
 
 			$list = DB::select($sql);
+
 
 		}
 		
@@ -123,7 +122,21 @@ MONTH ) and O.date_add != '0000-00-00 00:00:00' AND PP.active = 1*/
 	{
 		$deviceSales = self::getDeviceSales($shop, $period);
 		$data        = [];
-		
+		$prestabot   = new PB;
+		$amount      = function($product, $qty) use ($prestabot){
+			                $price = $prestabot::product($product, 'price_reseller');
+
+			                if($price['value'] && $price['value'] > 0)
+			                {
+			                    $ca = $price['value'] * $qty;
+			                }
+			                else
+			                {
+			                    $ca = '';
+			                }
+
+			                return $ca;
+						};
 
 		if(empty($deviceSales))
 		{	
@@ -132,13 +145,19 @@ MONTH ) and O.date_add != '0000-00-00 00:00:00' AND PP.active = 1*/
 
 		foreach($deviceSales as $one)
 		{			
-			$data[]    = [
-							'ca'     => $one->CA, 
+			$ca        = $amount($one->id_product, $one->QTY);
+			$pu        = PB::product($one->id_product, 'price_reseller');
+			echo $ca.'<br />';
+			$data[$ca] = [
+							'ca'     => $ca, 
 							'device' => $one->name, 
-							'brand'  => $one->brand							
+							'qty'    => $one->QTY,
+							'pu'     => $pu['value']
 					     ];
 		}
 
+		krsort($data);
+		echo count($data);exit;
 		return $data;
 	}
 

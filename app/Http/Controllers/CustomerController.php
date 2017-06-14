@@ -45,10 +45,17 @@ class CustomerController extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function oneCustomer($id)
+	public function oneCustomer($id, Request $verb)
 	{
 		//
-		return Customer::wsOne($id);
+		$column = '';
+
+		if($verb->has('column') && $verb->input('column') != '')
+		{
+			$column = $verb->input('column');
+		}
+		
+		return Customer::wsOne($id, $column);
 	}
 
 	/**

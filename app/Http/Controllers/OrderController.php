@@ -133,10 +133,17 @@ class OrderController extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function oneOrder($id)
+	public function oneOrder($id, Request $verb)
 	{
 		//
-		return Order::wsOne($id);
+		$column = '';
+
+		if($verb->has('column') && $verb->input('column') != '')
+		{
+			$column = $verb->input('column');
+		}
+
+		return Order::wsOne($id, $column);
 	}
 
 	/**
