@@ -62,9 +62,9 @@ class CustomerTest extends TestCase{
 			//
 			$editable = [
 							'id_customer'	=> 247,
-							'to_callback' 	=> '0', 
-							'status'		=> '0', 
-							'newsletter'	=> 1, 
+							'to_callback' 	=> '0',
+							'status'		=> '0',
+							'newsletter'	=> 1,
 							'notes'			=> urlencode('my str'),  
 					 		'unit_test'		=> TRUE
 						];

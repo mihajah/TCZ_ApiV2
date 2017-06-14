@@ -36,6 +36,9 @@ class CollectionTest extends TestCase{
 		if($verb == 'POST')
 		{
 			//
+			$pcv   = [];
+			$pcv[] = ['id_customer' => 8, 'price' => 3];
+
 			$fillable = [
 							'collection_name' 	=> 'automatique unit test', 
 							'alt_name'			=> 'automatique unit test', 
@@ -55,6 +58,7 @@ class CollectionTest extends TestCase{
 							'feature5'			=> '5',
 							'classic'			=> '0', 
 							'DefaultColors'		=> [1, 2],
+							'pcv'               => $pcv,
 							'unit_test'			=> TRUE
 						];
 
@@ -65,6 +69,9 @@ class CollectionTest extends TestCase{
 		if($verb == 'PUT')
 		{
 			//
+			$pcv   = [];
+			$pcv[] = ['id_customer' => 8, 'price' => 3];
+
 			$editable = [
 							'id_collection'		=> '58',
 							'collection_name' 	=> 'automatique unit test', 
@@ -85,6 +92,7 @@ class CollectionTest extends TestCase{
 							'feature5'			=> '5',
 							'classic'			=> '0', 
 							'DefaultColors'		=> [1, 2],
+							'pcv'               => $pcv,
 							'unit_test'			=> TRUE
 						];
 
