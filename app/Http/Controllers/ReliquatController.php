@@ -108,7 +108,7 @@ class ReliquatController extends Controller {
 
 		if($exist['success'])
 		{
-			return ['success' => TRUE, 'data' => Reliquat::wsOne($exist['data'])];
+			return ['success' => TRUE, 'data' => Reliquat::wsOne($exist['data'])]; 
 		}
 		else
 		{
