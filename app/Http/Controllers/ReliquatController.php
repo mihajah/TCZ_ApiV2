@@ -103,6 +103,11 @@ class ReliquatController extends Controller {
 			return ['success' => FALSE, 'error' => 'You must provide required field', 'Required field' => $fillable, 'Your field' => $all];
 		}
 
+		if($verb->has('unit_test'))
+		{
+			return ['success' => TRUE];
+		}
+
 		$data  = $verb->except('unit_test');
 		$exist = Reliquat::beforeSave($data);
 

@@ -124,7 +124,9 @@ class Reliquat extends Model {
 
 	public static function beforeSave($raw)
 	{
-		$n = parent::where('id_product', '=', $raw['id_product'])->get()->count();
+		$DB = parent::where('id_product', '=', $raw['id_product'])->where('id_order', '=', $raw['id_order']);
+		$n = $DB->get()->count();
+		
 		if($n > 0)
 		{
 			foreach($raw as $k => $v)
@@ -133,11 +135,11 @@ class Reliquat extends Model {
 					$data[$k] = $v;
 			}
 
-			$updated = parent::where('id_product', '=', $raw['id_product'])->update($data);
+			$updated = $DB->update($data);
 			
 			if($updated)
 			{
-				$id = parent::where('id_product', '=', $raw['id_product'])->first()->id;
+				$id = $DB->first()->id;
 				return ['success' => TRUE, 'data' => $id];
 			}				
 			else
@@ -172,7 +174,13 @@ class Reliquat extends Model {
 		$data['id']       = $r->id;
 		$data['customer'] = ($customer) ? ['id' => $customer->id_customer, 'name' => $customer->name] : [];
 		$data['order']    = ['id' => $r->id_order];
-		$data['product']  = ($product) ? ['id' => $r->id_product, 'name' => Product::wsOne($r->id_product, 'obj')->name] : [];
+		$data['product']  = ($product) ? ['id' => $r->id_product, 
+											'name'           => Product::wsOne($r->id_product, 'obj')->name, 
+											'collection'     => Product::wsOne($r->id_product, 'obj')->collection, 
+											'pictures'       => Product::wsOne($r->id_product, 'obj')->pictures, 
+											'brand'          => Product::wsOne($r->id_product, 'obj')->forbrand,
+											'device'         => Product::wsOne($r->id_product, 'obj')->fordevice,
+											'price_reseller' => Product::wsOne($r->id_product, 'obj')->price_reseller] : [];
 		$data['quantity'] = ['initial' => $r->qty_initial, 'sent' => $r->qty_sent, 'left' => $r->qty_left];
 		$data['date']     = ['created' => substr($r->created_at, 0, 19), 'updated' => substr($r->updated_at, 0, 19)];
 
