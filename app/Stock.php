@@ -322,6 +322,8 @@ class Stock extends Model {
 
 		if(count($product_panel) > 0)
 		{
+			self::deleteOldRecords();
+
 			foreach($product_panel as $pp)
 			{
 				$id_product 			= $pp;
@@ -385,6 +387,17 @@ class Stock extends Model {
 	/**
 	* Internal Method
 	*/
+
+	//delete two month year old data
+	protected static function deleteOldRecords($period = 2)
+	{
+		$table_log 	= 'apb_stock_log';
+		$sql        = "DELETE FROM  ".$table_log." 
+				       WHERE date_logged < ( CURRENT_DATE - INTERVAL $period 
+				       MONTH )";
+		
+		DB::delete($sql);
+	}
 
 	//--
 	// know if product is really sold
