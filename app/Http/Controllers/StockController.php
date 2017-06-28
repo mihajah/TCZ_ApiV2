@@ -5,9 +5,14 @@ use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 use App\Stock;
+use App\Product;
 
 class StockController extends Controller {
 
+	protected static $product_panel       = '/var/www/public_html/stock_tracker/product_panel.php';
+	protected static $useSelectedProduct  = FALSE;
+
+	
 	/**
 	 * Display a listing of the resource.
 	 *
@@ -92,7 +97,24 @@ class StockController extends Controller {
 	public function tracker($unit_test = '')
 	{
 		//
-		include '/var/www/public_html/stock_tracker/product_panel.php';
+		if(self::$useSelectedProduct)
+		{
+			include self::$product_panel; 
+		}
+		else
+		{
+			$product_panel = [];
+			$raw           = Product::select('id_product')->get();
+
+			if(count($raw) > 0)
+			{
+				foreach($raw as $one)
+				{
+					$product_panel[] = $one->id_product;
+				}
+			}
+		}
+
 		return Stock::tracker($product_panel, $unit_test);
 	}
 
