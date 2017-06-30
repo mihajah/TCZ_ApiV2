@@ -10,6 +10,7 @@ return array(
     'CreateCollectionsTable' => $baseDir . '/database/migrations/2017_03_06_110322_create_collections_table.php',
     'CreateCustomersTable' => $baseDir . '/database/migrations/2017_03_08_113257_create_customers_table.php',
     'CreateDevicesTable' => $baseDir . '/database/migrations/2017_03_06_093713_create_devices_table.php',
+    'CreateInvoicesTable' => $baseDir . '/database/migrations/2017_06_30_103356_create_invoices_table.php',
     'CreateOrdersTable' => $baseDir . '/database/migrations/2017_03_08_080031_create_orders_table.php',
     'CreatePasswordResetsTable' => $baseDir . '/database/migrations/2014_10_12_100000_create_password_resets_table.php',
     'CreateProductsTable' => $baseDir . '/database/migrations/2017_03_06_070626_create_products_table.php',
