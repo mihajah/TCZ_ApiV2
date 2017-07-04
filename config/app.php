@@ -147,6 +147,8 @@ return [
 		'App\Providers\EventServiceProvider',
 		'App\Providers\RouteServiceProvider',
 		'App\Providers\HelperServiceProvider',
+		'Milon\Barcode\BarcodeServiceProvider',
+		'Barryvdh\DomPDF\ServiceProvider',
 
 	],
 
@@ -195,6 +197,8 @@ return [
 		'URL'       => 'Illuminate\Support\Facades\URL',
 		'Validator' => 'Illuminate\Support\Facades\Validator',
 		'View'      => 'Illuminate\Support\Facades\View',
+		'DNS1D' 	=> 'Milon\Barcode\Facades\DNS1DFacade',
+		'DNS2D' 	=> 'Milon\Barcode\Facades\DNS2DFacade',
 
 	],
 
