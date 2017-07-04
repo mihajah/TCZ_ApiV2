@@ -284,6 +284,7 @@ class ComposerStaticInit1b7e59c7a79ffa054d1a9206c9869afd
         'CreateCollectionsTable' => __DIR__ . '/../..' . '/database/migrations/2017_03_06_110322_create_collections_table.php',
         'CreateCustomersTable' => __DIR__ . '/../..' . '/database/migrations/2017_03_08_113257_create_customers_table.php',
         'CreateDevicesTable' => __DIR__ . '/../..' . '/database/migrations/2017_03_06_093713_create_devices_table.php',
+        'CreateInvoicesTable' => __DIR__ . '/../..' . '/database/migrations/2017_06_30_103356_create_invoices_table.php',
         'CreateOrdersTable' => __DIR__ . '/../..' . '/database/migrations/2017_03_08_080031_create_orders_table.php',
         'CreatePasswordResetsTable' => __DIR__ . '/../..' . '/database/migrations/2014_10_12_100000_create_password_resets_table.php',
         'CreateProductsTable' => __DIR__ . '/../..' . '/database/migrations/2017_03_06_070626_create_products_table.php',

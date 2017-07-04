@@ -388,7 +388,7 @@ class Stock extends Model {
 	* Internal Method
 	*/
 
-	//delete two month year old data
+	//delete two month year old data to free db storage
 	protected static function deleteOldRecords($period = 2)
 	{
 		$table_log 	= 'apb_stock_log';

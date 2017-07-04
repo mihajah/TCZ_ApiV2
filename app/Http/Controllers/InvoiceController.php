@@ -4,9 +4,8 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
-use App\Device;
 
-class BrandController extends Controller {
+class InvoiceController extends Controller {
 
 	/**
 	 * Display a listing of the resource.
@@ -16,61 +15,6 @@ class BrandController extends Controller {
 	public function index()
 	{
 		//
-	}
-
-	/**
-	 * Display a listing of the resource.
-	 *
-	 * @return Response
-	 */
-	public function allBrand()
-	{
-		//
-		$display  = [];
-		$allBrand = Device::wsAllBrand();
-		foreach($allBrand as $one)
-		{
-			$display[] = ['id' => $one->id_value, 'name' => $one->value];
-		}
-
-		return $display;
-	}
-
-	/**
-	 * Display a listing of the resource.
-	 *
-	 * @return Response
-	 */
-	public function getWithDevice()
-	{
-		//
-		$device  = [];
-		$allBrand = Device::wsAllBrand();
-		foreach($allBrand as $brand)
-		{
-			if(Device::getAllDevice($brand->id_value))
-				$device[$brand->value] = Device::getAllDevice($brand->id_value);
-		}
-
-		return $device;
-	}
-
-	/**
-	 * Display a listing of the resource.
-	 *
-	 * @return Response
-	 */
-	public function getPopular()
-	{
-		//
-		$brand  = [];
-		$allBrand = Device::wsAllBrand();
-		for($i=0; $i<count($allBrand) && $i < 8; $i++)
-		{
-			$brand[] = ['id' => $allBrand[$i]->id_value, 'name' => $allBrand[$i]->value];
-		}
-
-		return $brand;
 	}
 
 	/**
