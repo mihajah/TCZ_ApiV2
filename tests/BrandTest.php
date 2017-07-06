@@ -36,7 +36,6 @@ class BrandTest extends TestCase{
 	private function checkValidHttpResponse($route)
 	{
 		$response = $this->call('GET', $route);
-		print_r($response->getContent());exit;
 		$this->assertEquals(200, $response->getStatusCode());
 	}
 }
