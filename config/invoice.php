@@ -3,6 +3,7 @@
 	$invoice_path 		= str_replace('public_html/apiv2/config','factures/',$server_path);
 	$old_invoice_path 	= str_replace('public_html/apiv2/config','old_factures/',$server_path);
 	$oldInvoice 		= glob($old_invoice_path.'*.pdf');
+	$InvoiceOld			= Array();
 
 	foreach($oldInvoice as $old){
 		$InvoiceOld[] = str_replace('/var/www/old_factures/','',$old);

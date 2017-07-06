@@ -126,17 +126,19 @@ class InvoiceController extends Controller {
 		$OLD_INVOICE_PATH 	= Config::get('invoice.OLD_INVOICE_PATH');
 		$oldInvoice 		= glob($OLD_INVOICE_PATH.'*.pdf');
 		$userData[0] 		= json_decode(file_get_contents($URLStaging.'ws/customers/'.$id),true);
-		
+		$InvoiceOld			= Array();
 		foreach($oldInvoice as $old){
 			$InvoiceOld[]	= str_replace('/var/www/old_factures/','',$old);
 		}
 		
-		foreach($InvoiceOld as $old){
-			$cmdProv = '/'.$cmd.'/';
-			$result = preg_match($cmdProv ,$old,$matches);
-			if($result > 0){
-				$old_fact = $old;
-				break;
+		if(!empty($InvoiceOld)){
+			foreach($InvoiceOld as $old){
+				$cmdProv = '/'.$cmd.'/';
+				$result = preg_match($cmdProv ,$old,$matches);
+				if($result > 0){
+					$old_fact = $old;
+					break;
+				}
 			}
 		}
 		
