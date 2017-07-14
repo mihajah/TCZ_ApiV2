@@ -2,6 +2,9 @@
 namespace App\Helpers;
 use DB;
 use App\Helpers\Prestashop as PS;
+use App\Helpers\Customer as CST;
+
+use App\Order;
 
 
 class History
@@ -73,7 +76,8 @@ class History
 														'id_product' 	=> $row['id_product'],
 														'id_order'		=> $row['id_order'],
 														'event' 		=> $row['event'],
-														'qty_real' 		=> $row['qty_real']
+														'qty_real' 		=> $row['qty_real'],
+														'customer' 		=> $row['customer'],
 													  ]];	
 				endif;
 			}
@@ -119,7 +123,8 @@ class History
 													'id_product' 	=> $row['id_product'],
 													'id_order'		=> $row['id_order'],
 													'event' 		=> $row['event'],
-													'qty_real' 		=> $qty
+													'qty_real' 		=> $qty,
+													'customer' 		=> $row['customer'],
 												]];
 			}
 		}
@@ -181,6 +186,7 @@ class History
 						$data['qty_real']		= '';
 						$data['event'] 			= $e;
 						$data['id_order']		= $row->id_order;
+						$data['customer']		= '';
 
 					$fdata[$i] = $data;
 					$i++;
@@ -241,6 +247,10 @@ class History
 						$data['qty_real']		= '';
 						$data['event'] 			= $e;
 						$data['id_order']		= $row->id_order;
+						
+						$oCust 			  = CST::getOneTczCustomerByOrder($row->id_order);
+						$data['customer'] = $oCust->firstname." ".$oCust->lastname;
+						//$data['customer'] = " fdfdfrererer";
 
 					$fdata[$i] = $data;
 					$i++;
@@ -299,6 +309,9 @@ class History
 						$data['qty_real']		= '';
 						$data['event'] 			= $e;
 						$data['id_order']		= $row->id_reseller_order;
+						
+						$tOrder 		  = Order::wsOne($row->id_reseller_order);
+						$data['customer'] = $tOrder['customer']['name'];
 
 					$fdata[$i] = $data;
 					$i++;
@@ -343,6 +356,7 @@ class History
 						$data['qty_real']		= $row->qty_real;
 						$data['event'] 			= $e;
 						$data['id_order']		= 0;
+						$data['customer']		= '';
 
 					$fdata[$i] = $data;
 					$i++;

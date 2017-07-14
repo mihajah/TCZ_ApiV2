@@ -48,7 +48,7 @@ class Stat
 							{
 								$month_sales = self::getSalesByMonth($device, $date);				
 								$modifier 	 = self::generateModifier($year_sales, $mm);
-								$sales 		 = $month_sales->TQ * $modifier;
+								$sales 		 = $month_sales['TQ'] * $modifier;
 								$sales       = ['TQ' => $sales];
 							}
 							else
