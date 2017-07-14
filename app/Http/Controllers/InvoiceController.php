@@ -86,7 +86,7 @@ class InvoiceController extends Controller {
 	
 	public function createPdf(Request $req){
 		$URLStaging = Config::get('constants.PROD_BASE_URL');
-		$INVOICE = Config::get('invoice.INVOICE');
+		$OLD_INVOICE_PATH 	= Config::get('invoice.OLD_INVOICE_PATH');
 		$user = $req->input('user');
 		$cmd = $req->input('cmd');
 		$userData[0] = json_decode(file_get_contents($URLStaging.'ws/customers/'.$user),true);
@@ -97,6 +97,9 @@ class InvoiceController extends Controller {
 				$nbFacture 		= 	$commande['billing_number'];
 				$Carts 			= 	$commande['cart'];
 				$DateBilling 	= 	date("d-m-Y", strtotime($commande['billing_date']));
+				$temp 				= substr($commande['billing_date'],0,10);
+				$Date 				= str_replace('-','',$temp);
+				$Date 				= substr($Date,2,7);
 				$discount		= 	$commande['discount'];
 				$delivery24 	= 	$commande['delivery24'];
 				$shipping_fee 	= 	$commande['shipping_fee'];
@@ -114,8 +117,8 @@ class InvoiceController extends Controller {
 		}
 		$a = number_format($A,2);
 		$pdf = App::make('dompdf.wrapper');
-		$pdf->loadView('pdf',['userData'=>$userData,'nbFacture'=>$nbFacture,'nbCmd'=>$cmd,'a'=>$a,'Products'=>$Products,'carts'=>$Qty,'dateBilling'=>$DateBilling,'discount'=>$discount,'delivery24'=>$delivery24,'shipping_fee'=>$shipping_fee, 'BASE_URL'=>$URLStaging])->save($INVOICE.$cmd.'.pdf');
-		return json_encode(['id_customer' => $user, 'id_order' => $cmd], JSON_UNESCAPED_SLASHES);
+		$pdf->loadView('pdf',['userData'=>$userData,'nbFacture'=>$nbFacture,'nbCmd'=>$cmd,'a'=>$a,'Products'=>$Products,'carts'=>$Qty,'dateBilling'=>$DateBilling,'discount'=>$discount,'delivery24'=>$delivery24,'shipping_fee'=>$shipping_fee, 'BASE_URL'=>$URLStaging])->save($OLD_INVOICE_PATH.'Facture'.$nbFacture.'cde'.$cmd.'_'.$Date.'_('.$userData[0]['address_billing']['city'].').pdf');
+		return json_encode(['id_customer' => $user, 'id_order' => $cmd], JSON_UNESCAPED_SLASHES); 
 
 	}
 	
@@ -159,6 +162,9 @@ class InvoiceController extends Controller {
 				if($commande['id'] == $cmd){
 					$nbFacture 		= $commande['billing_number'];
 					$Carts 			= $commande['cart'];
+					$temp 			= substr($commande['billing_date'],0,10);
+					$Date 			= str_replace('-','',$temp);
+					$Date 			= substr($Date,2,7);
 					$DateBilling 	= date("d-m-Y", strtotime($commande['billing_date']));
 					$discount 		= $commande['discount'];
 					$delivery24 	= $commande['delivery24'];
@@ -173,11 +179,11 @@ class InvoiceController extends Controller {
 				$Products[] = $products;
 				$nbP = $nbP + $value;
 				$A = $A+$products['price_reseller']*$value;
-				$Qty[] = $value;
+				$Qty[] = $value; 
 			}
 			$a = number_format($A,2);
 			$pdf = App::make('dompdf.wrapper');
-			$pdf->loadView('pdf',['userData'=>$userData,'nbFacture'=>$nbFacture,'nbCmd'=>$cmd,'a'=>$a,'Products'=>$Products,'carts'=>$Qty,'dateBilling'=>$DateBilling,'discount'=>$discount,'delivery24'=>$delivery24,'shipping_fee'=>$shipping_fee, 'BASE_URL'=>$URLStaging])->save($INVOICE.$cmd.'.pdf');
+			$pdf->loadView('pdf',['userData'=>$userData,'nbFacture'=>$nbFacture,'nbCmd'=>$cmd,'a'=>$a,'Products'=>$Products,'carts'=>$Qty,'dateBilling'=>$DateBilling,'discount'=>$discount,'delivery24'=>$delivery24,'shipping_fee'=>$shipping_fee, 'BASE_URL'=>$URLStaging])->save($OLD_INVOICE_PATH.'Facture'.$nbFacture.'cde'.$cmd.'_'.$Date.'_('.$userData[0]['address_billing']['city'].').pdf');
 			return Response::make(file_get_contents($INVOICE.$cmd.'.pdf'), 200, [
 				'Content-Type' 			=> 'application/pdf',
 				'Content-Disposition' 	=> 'inline; filename="'.$cmd.'"'
