@@ -412,3 +412,14 @@ Route::group(['prefix' => 'reliquats'], function(){
 	//post, put
 	Route::post('/', ['uses' => 'ReliquatController@store']);
 });
+
+
+/**
+* Invoices
+*/
+Route::group(['prefix' => 'invoice'], function(){
+	//post
+	Route::post('/', ['uses' => 'InvoiceController@createPdf']);
+	//get
+	Route::get('/{id}/{cmd}', ['uses' => 'InvoiceController@viewPdf']);
+});

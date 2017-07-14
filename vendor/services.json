@@ -27,7 +27,9 @@
         "App\\Providers\\ConfigServiceProvider",
         "App\\Providers\\EventServiceProvider",
         "App\\Providers\\RouteServiceProvider",
-        "App\\Providers\\HelperServiceProvider"
+        "App\\Providers\\HelperServiceProvider",
+        "Milon\\Barcode\\BarcodeServiceProvider",
+        "Barryvdh\\DomPDF\\ServiceProvider"
     ],
     "eager": [
         "Illuminate\\Auth\\AuthServiceProvider",
@@ -46,7 +48,9 @@
         "App\\Providers\\ConfigServiceProvider",
         "App\\Providers\\EventServiceProvider",
         "App\\Providers\\RouteServiceProvider",
-        "App\\Providers\\HelperServiceProvider"
+        "App\\Providers\\HelperServiceProvider",
+        "Milon\\Barcode\\BarcodeServiceProvider",
+        "Barryvdh\\DomPDF\\ServiceProvider"
     ],
     "deferred": {
         "command.app.name": "Illuminate\\Foundation\\Providers\\ArtisanServiceProvider",

@@ -29,7 +29,8 @@ class VerifyCsrfToken extends BaseVerifier {
 							'subtypes',
 							'patterns',
 							'reliquats',
-							'reliquats/*'
+							'reliquats/*',
+							'invoice'
 						];
 
 	/**
