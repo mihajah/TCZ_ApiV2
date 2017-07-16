@@ -1,3 +1,7 @@
-/config/database.php
-/node_modules
-
+config/database.php
+node_modules
+.env
+.htaccess
+config/app.php
+config/constants.php
+phpunit.xml
