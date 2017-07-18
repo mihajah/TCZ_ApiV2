@@ -16,10 +16,12 @@ class Prestashop
 	{
 		$and   = ' PT.id_product = :id';
 		$where = ['id' => $id_ean];
+		
+		$data = [];
 
 		if(strlen($id_ean) == 12 || strlen($id_ean) == 13)
 		{
-			$and = ' PT.ean13 = :ean';
+			$and   = ' PT.ean13 = :ean';
 			$where = ['ean' => $id_ean];
 		}
 
@@ -28,9 +30,12 @@ class Prestashop
 			$sql = 'SELECT '.$field.' FROM '.self::$product_table.' AS PT, '.self::$product_table_lang.' AS PTL 
 					WHERE PT.id_product = PTL.id_product
 					AND '.$and;
+
 			$results = DB::select($sql, $where);
 			$field   = str_replace(['PT.', 'PTL.'], ['', ''], $field);
-			$data[]  = $results[0]->$field;
+			if(!empty($results)){
+				$data[]  = $results[0]->$field;
+			} 			
 		}
 		else
 		{
@@ -46,7 +51,8 @@ class Prestashop
 		}
 		else
 		{
-			return false;
+			//return false;
+			return -1;
 		}
 		
 	}

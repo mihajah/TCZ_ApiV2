@@ -197,10 +197,31 @@ class Call extends Model {
 		return self::destroy($id);
 	}
 
+	public static function wsCallToDo()
+	{
+		return self::getAllCallTodo();
+	}
 
 	/**
 	* Public Method
 	*/
+	public static function getAllCallTodo()
+	{
+		$data = [];
+		$sql  = "SELECT * FROM `apb_calls` as CA 
+				 INNER JOIN apb_customers as CU ON CU.id_customer = CA.id_customer 
+				 WHERE CA.date in (SELECT MAX(date) from apb_calls GROUP BY id_customer)";
+
+		$result = DB::select($sql);
+
+		if(count($result) > 0)
+		{
+			$data = $result;
+		}
+
+		return $data;
+	}
+
 	public static function add($data)
 	{
 		$call = new self;

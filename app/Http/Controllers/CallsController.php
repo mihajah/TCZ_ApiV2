@@ -56,6 +56,18 @@ class CallsController extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
+	public function callTodo()
+	{
+		//
+		return Call::wsCallToDo();
+	}
+
+	/**
+	 * Display the specified resource.
+	 *
+	 * @param  int  $id
+	 * @return Response
+	 */
 	public function allCalls()
 	{
 		//
